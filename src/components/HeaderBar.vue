@@ -3,7 +3,7 @@
     <div id="cm_headerbar_menuicon" class="cm-headerbar-item">
       <i class="fa fa-bars" aria-hidden="true"></i>
     </div>
-    <div class="cm-headerbar-itemspace"></div>
+    <div class="cm-common-itemspace"></div>
     <div id="cm_headerbar_lang" class="cm-headerbar-item">
       <li>English</li>
       <li>中文</li>
@@ -40,10 +40,6 @@ export default {
       &:hover{
         cursor: pointer;
       }
-    }
-
-    .cm-headerbar-itemspace {
-      flex-grow: 1;
     }
 
     #cm_headerbar_menuicon {

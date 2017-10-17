@@ -26,6 +26,7 @@ export default {
 html {
   font-size: 2vh;
   font-family: 'sans-serif';
+  box-sizing: border-box;
 }
 
 body {
@@ -39,5 +40,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.cm-common-itemspace {
+  flex-grow: 1;
 }
 </style>
