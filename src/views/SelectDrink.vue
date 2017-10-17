@@ -5,7 +5,7 @@
       <mt-swipe :auto="0">
         <mt-swipe-item v-for="(prods, index) in drinktype" :key="index">
           <div class="cm-selectdrink-selection-page-col">
-            <div class="cm-selectdrink-selection-page-col-item" v-for="(prod, subIndex) in prods" :key="subIndex" @click="goDetail">
+            <div class="cm-selectdrink-selection-page-col-item" v-for="(prod, subIndex) in prods" :key="subIndex" @click="goDetail(prod.typename)">
               <img :src="prod.url">
               <p class="cm-selectdrink-selection-page-col-item-title">{{prod.typename}}</p>
             </div>
@@ -27,8 +27,8 @@ export default {
     }
   },
   methods: {
-    goDetail () {
-      setTimeout(() => this.$router.push('/drinkdetail'), 1000)
+    goDetail (type) {
+      setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 500)
     }
   }
 }

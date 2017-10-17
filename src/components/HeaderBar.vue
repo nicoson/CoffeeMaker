@@ -7,7 +7,7 @@
     <div id="cm_headerbar_lang" class="cm-headerbar-item">
       <li>English</li>
       <li>中文</li>
-      <li>日本语</li>
+      <li>日本語</li>
     </div>
     <div id="cm_headerbar_helper" class="cm-headerbar-item">
       <i class="fa fa-microphone" aria-hidden="true">&nbsp;&nbsp;HELP</i>

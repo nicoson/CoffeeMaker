@@ -1,33 +1,9 @@
 <template>
   <div class="cm-router-container">
     <div id="cm_drinkdetail_optionbar">
-      <div class="cm-drinkdetail-option-item">
-        <p>Sugar</p>
-        <img src="/static/imgs/bean.png">
-      </div>
-      <div class="cm-drinkdetail-option-item">
-        <p>Cream</p>
-        <img src="/static/imgs/bean.png">
-      </div>
-      <div class="cm-drinkdetail-option-item">
-        <p>Milk</p>
-        <img src="/static/imgs/bean.png">
-      </div>
-      <div class="cm-drinkdetail-option-item">
-        <p>Soya</p>
-        <img src="/static/imgs/bean.png">
-      </div>
-      <div class="cm-drinkdetail-option-item">
-        <p>Decaf</p>
-        <img src="/static/imgs/bean.png">
-      </div>
-      <div class="cm-drinkdetail-option-item">
-        <p>Iced</p>
-        <img src="/static/imgs/bean.png">
-      </div>
-      <div class="cm-drinkdetail-option-item">
-        <p>Shot</p>
-        <img src="/static/imgs/bean.png">
+      <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index">
+        <p>{{flavor.name}}</p>
+        <img :src="flavor.url" />
       </div>
     </div>
     <div id="cm_drinkdetail_animation"></div>
@@ -65,12 +41,18 @@
 </template>
 
 <script>
+import flavors from '@/assets/flavor'
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      flavors: flavors
     }
+  },
+  created () {
+    console.log(this.$route.params.type)
+  },
+  methods: {
   }
 }
 </script>
