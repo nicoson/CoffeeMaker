@@ -5,9 +5,9 @@
       <mt-swipe :auto="0">
         <mt-swipe-item v-for="(prods, index) in drinktype" :key="index">
           <div class="cm-selectdrink-selection-page-col">
-            <div class="cm-selectdrink-selection-page-col-item" v-for="(prod, subIndex) in prods" :key="subIndex" @click="goDetail(prod.typename)">
+            <div class="cm-selectdrink-selection-page-col-item" v-for="(prod, subIndex) in prods" :key="subIndex" @click="goDetail(prod.nameEN)">
               <img :src="prod.url">
-              <p class="cm-selectdrink-selection-page-col-item-title">{{prod.typename}}</p>
+              <p class="cm-selectdrink-selection-page-col-item-title">{{prod.nameEN}}</p>
             </div>
           </div>
         </mt-swipe-item>
@@ -23,7 +23,17 @@ export default {
   name: 'SelectDrink',
   data () {
     return {
-      drinktype: drinktype
+      type: drinktype
+    }
+  },
+  computed: {
+    drinktype: function () {
+      let len = 6
+      let res = []
+      for (let i = 0; i < Math.ceil(this.type.length / len); i++) {
+        res.push(this.type.slice(i * len, (i + 1) * len))
+      }
+      return res
     }
   },
   methods: {
@@ -41,7 +51,7 @@ export default {
   }
 
   .cm-selectdrink-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     text-shadow: 3px 3px 7px #330000;
   }
 
@@ -67,9 +77,10 @@ export default {
         justify-content: space-between;
         align-items: center;
         color: #666666;
+        height: 100%;
+        align-content: center;
 
         .cm-selectdrink-selection-page-col-item {
-          width: 20%;
           padding: 1.5rem;
           border: 0.18rem solid white;
 
@@ -77,9 +88,8 @@ export default {
             border-image: linear-gradient(-45deg, #3cb8b5 10%, #3cb8b5 10%, white 10%, white 90%, white 90%, #3cb8b5 90%, #3cb8b5 100%) 2;
           }
 
-          img {
-            width: 5rem;
-            height: 7rem;
+          img, p {
+            width: 10rem;
           }
 
           .cm-selectdrink-selection-page-col-item-title {

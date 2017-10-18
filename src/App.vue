@@ -24,13 +24,15 @@ export default {
 }
 
 html {
-  font-size: 2vh;
+  font-size: 2vw;
   font-family: 'sans-serif';
   box-sizing: border-box;
+  height: 100%;
+  letter-spacing: 0.1rem;
 }
 
 body {
-  height: 100vh;
+  height: 100%;
   background: linear-gradient(-30deg, rgb(59,178,184), rgb(67,230,150));
 }
 
