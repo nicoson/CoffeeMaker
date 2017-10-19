@@ -2,13 +2,13 @@
   <div class="cm-router-container">
     <p class="cm-confirm-title">ANY SPECIAL REQUIREMENT</p>
     <div class="cm-confirm-inputgroup">
-      <input type="text" name="" />
+      <input type="text" name="" v-model="requirements"/>
       <img src="/static/imgs/coffeeicons/Voice@2x.png">
     </div>
 
     <P class="cm-confirm-title">PLEASE INPUT YOUR NAME OR SCAN FACE</P>
     <div class="cm-confirm-inputgroup">
-      <input type="text" name="" />
+      <input type="text" name="" v-model="name" />
       <img src="/static/imgs/coffeeicons/Face@2x.png">
     </div>
 
@@ -34,16 +34,25 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Confirm',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      name: '',
+      requirements: ''
+    }
+  },
+  computed: {
+    type: function () {
+      return this.$route.params.type
+    },
+    options: function () {
+      return this.$route.params.options
     }
   },
   methods: {
     submit () {
-      console.log(1)
-      this.$router.push({ name: 'Result', params: { type: 1 } })
+      console.log(this.type)
+      this.$router.push({ name: 'Result', params: { name: this.name, type: this.type } })
     }
   }
 }

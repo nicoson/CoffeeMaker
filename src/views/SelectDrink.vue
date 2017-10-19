@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     drinktype: function () {
-      let len = 6
+      let len = 9
       let res = []
       for (let i = 0; i < Math.ceil(this.type.length / len); i++) {
         res.push(this.type.slice(i * len, (i + 1) * len))
@@ -60,16 +60,18 @@ export default {
     margin-top: 2rem;
   }
 
+  @containerHeight: 100vw;
+
   .cm-selectdrink-selection-container {
-    height: 90vw;
-    margin: 1.5rem;
+    height: @containerHeight;
+    margin: 1.5rem 1.5rem 3rem 1.5rem;
     box-shadow: 0 0 2rem #777;
     border-radius: 1rem;
     background: white;
 
     .mint-swipe {
-      height: 90vw-2*1.5vw;
-      padding: 1.5rem;
+      height: @containerHeight - 1.5rem - 3rem;
+      padding: 1.5rem 1.5rem 3rem 1.5rem;
 
       .cm-selectdrink-selection-page-col {
         display: flex;

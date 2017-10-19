@@ -1,31 +1,76 @@
 const flavor = [
   {
     name: 'Sugar',
-    url: '/static/imgs/coffeeicons/Sugar@2x.png'
+    iconUrl: '/static/imgs/coffeeicons/Sugar@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/SugarS@2x.png',
+    subMenu: [],
+    replace: null
   },
   {
     name: 'Cream',
-    url: '/static/imgs/coffeeicons/Cream@2x.png'
+    iconUrl: '/static/imgs/coffeeicons/Cream@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/Cream@2x.png',
+    subMenu: [],
+    replace: null
   },
   {
     name: 'Milk',
-    url: '/static/imgs/coffeeicons/Milk@2x.png'
-  },
-  {
-    name: 'Soya',
-    url: '/static/imgs/coffeeicons/Soya@2x.png'
+    iconUrl: '/static/imgs/coffeeicons/Milk@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/Sugar@2x.png',
+    subMenu: [
+      {
+        name: 'Whole',
+        iconUrl: '/static/imgs/coffeeicons/Milk@2x.png',
+        bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
+        color: 'white'
+      },
+      {
+        name: 'Skim',
+        iconUrl: '/static/imgs/coffeeicons/Milk@2x.png',
+        bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
+        color: '#bbdeff'
+      },
+      {
+        name: 'Soya',
+        iconUrl: '/static/imgs/coffeeicons/Soya@2x.png',
+        bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
+        color: '#f3ce91'
+      }
+    ],
+    replace: null
   },
   {
     name: 'Decaf',
-    url: '/static/imgs/coffeeicons/Decaf@2x.png'
+    iconUrl: '/static/imgs/coffeeicons/Decaf@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/Decaf@2x.png',
+    subMenu: [],
+    replace: {
+      name: 'Caf',
+      iconUrl: '/static/imgs/coffeeicons/Caf@2x.png',
+      bottomUrl: ''
+    }
   },
   {
     name: 'Iced',
-    url: '/static/imgs/coffeeicons/AddIce@2x.png'
+    iconUrl: '/static/imgs/coffeeicons/AddIce@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/AddIce@2x.png',
+    subMenu: [],
+    replace: {
+      name: 'Hot',
+      iconUrl: '/static/imgs/coffeeicons/hot@2x.png',
+      bottomUrl: ''
+    }
   },
   {
     name: 'Shot',
-    url: '/static/imgs/coffeeicons/Shot.png'
+    iconUrl: '/static/imgs/coffeeicons/Shot.png',
+    bottomUrl: '/static/imgs/coffeeicons/Shot.png',
+    subMenu: [],
+    replace: {
+      name: 'No Shot',
+      iconUrl: '/static/imgs/coffeeicons/Shot.png',
+      bottomUrl: ''
+    }
   }
 ]
 

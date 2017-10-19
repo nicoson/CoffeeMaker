@@ -4,18 +4,26 @@
     <P class="cm-result-t2">We're preparing your coffee now....</P>
     <div class="cm-result-cupgroup">
       <img src="/static/imgs/coffeeicons/IcedDrink@2x.png">
-      <p class="cm-result-cupgroup-name">xxxxxxxx xxxxx</p>
+      <p class="cm-result-cupgroup-name">{{name}}</p>
     </div>
-    <p class="cm-result-t3">Americano</p>
+    <p class="cm-result-t3">{{type}}</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Result',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
+    }
+  },
+  computed: {
+    name: function () {
+      return this.$route.params.name
+    },
+    type: function () {
+      return this.$route.params.type
     }
   }
 }

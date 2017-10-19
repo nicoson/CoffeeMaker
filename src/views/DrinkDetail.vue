@@ -1,16 +1,26 @@
 <template>
   <div class="cm-router-container">
     <div id="cm_drinkdetail_optionbar">
-      <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index">
-        <p>{{flavor.name}}</p>
-        <img :src="flavor.url" />
+      <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index" @click="addOption(index)">
+        <p>{{recipe[index].showReplace ? flavor.replace.name : flavor.name}}</p>
+        <img :src="recipe[index].showReplace ? flavor.replace.iconUrl : flavor.iconUrl" />
+        <div class="cm-drinkdetail-option-item-subitemgroup" :class="{'cm-drinkdetail-option-item-submenu-hide': recipe[index].showSubmenu}" v-if="flavor.subMenu.length != 0">
+          <div class="cm-drinkdetail-option-item-subitemgroup-border"></div>
+          <ul>
+            <li v-for="(item, subIndex) in flavor.subMenu" :key="subIndex" @click="addOption(index,subIndex)">{{item.name}}</li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <div id="cm_drinkdetail_animation">
+    <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0">
       <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png">
       <p class="cm-drinkdetail-animation-title">{{type}}</p>
       <div class="cm-drinkdetail-animation-hot"></div>
+    </div>
+    <div id="cm_drinkdetail_animation" v-else>
+      <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png">
+      <p class="cm-drinkdetail-animation-title">{{type}}</p>
       <div class="cm-drinkdetail-animation-iced">
         <img src="/static/imgs/coffeeicons/Ice@2x.png">
         <img src="/static/imgs/coffeeicons/Ice@2x.png">
@@ -21,32 +31,20 @@
 
     <div id="cm_drinkdetail_footerbar">
       <div id="cm_drinkdetail_results">
-        <div class="cm-drinkdetail-results-item">
-          <i class="fa fa-hourglass-o" aria-hidden="true"></i>
-          <div>
-            <p>Sugar</p>
-            <p>+1</p>
-          </div>
-        </div>
-        <div class="cm-drinkdetail-results-item">
-          <i class="fa fa-hourglass-o" aria-hidden="true"></i>
-          <div>
-            <p>Milk</p>
-            <p>+1</p>
-          </div>
-        </div>
-        <div class="cm-drinkdetail-results-item">
-          <i class="fa fa-hourglass-o" aria-hidden="true"></i>
-          <div>
-            <p>Iced</p>
-            <p>+1</p>
+        <div class="cm-drinkdetail-results-item" v-for="(item, index) in recipe" :key="index">
+          <div v-if="item.num != 0">
+            <img :src="item.url">
+            <div>
+              <p>{{item.name}}</p>
+              <p v-if="item.num > 0">+{{item.num}}</p>
+            </div>
           </div>
         </div>
       </div>
       <div class="cm-common-itemspace"></div>
       <div id="cm_drinkdetail_actionbar">
-        <div class="cm-drinkdetail-button-confirm" @click="goDetail"><p>OK</p></div>
-        <div class="cm-drinkdetail-button-cancel">DEFAULT SET</div>
+        <div class="cm-drinkdetail-button-confirm" @click="goConfirm"><p>OK</p></div>
+        <div class="cm-drinkdetail-button-cancel" @click="resetOption">DEFAULT SET</div>
         <div class="cm-drinkdetail-button-cancel" @click="goBack">BACK</div>
       </div>
     </div>
@@ -54,12 +52,13 @@
 </template>
 
 <script>
-import flavors from '@/assets/flavor'
+import Flavors from '@/assets/flavor'
 export default {
-  name: 'HelloWorld',
+  name: 'DrinkDetail',
   data () {
     return {
-      flavors: flavors
+      flavors: Flavors,
+      recipe: []
     }
   },
   computed: {
@@ -68,14 +67,53 @@ export default {
     }
   },
   created () {
+    this.resetOption()
     console.log(this.$route.params.type)
   },
   methods: {
     goBack () {
+      this.resetOption()  //  reset custom options
       this.$router.go(-1)
     },
-    goDetail () {
-      this.$router.push({ name: 'Confirm', params: { type: 1 } })
+    goConfirm () {
+      this.$router.push({ name: 'Confirm', params: { type: this.type, options: this.recipe } })
+    },
+    addOption (index, subIndex = -1) {
+      console.log(index)
+
+      //  handle submenu items
+      if (subIndex !== -1) {
+        event.stopPropagation()
+        return
+      }
+      //  handle items with submenu
+      if (this.flavors[index].subMenu.length !== 0 && subIndex === -1) {
+        this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
+        return
+      }
+
+      //  handle binary choice - ice/hot caf/decaf
+      if (this.flavors[index].replace !== null) {
+        this.recipe[index].showReplace = !this.recipe[index].showReplace
+        this.recipe[index].name = this.recipe[index].showReplace ? this.flavors[index].name : this.flavors[index].replace.name
+        this.recipe[index].url = this.recipe[index].showReplace ? this.flavors[index].bottomUrl : this.flavors[index].replace.bottomUrl
+        this.recipe[index].num = this.recipe[index].showReplace ? -1 : 0
+      } else {
+        //  handle the addable choice
+        this.recipe[index].name = this.flavors[index].name
+        if (this.recipe[index].num < 3) {
+          this.recipe[index].num++
+        }
+      }
+    },
+    resetOption () {
+      this.recipe = Flavors.map(e => ({
+        name: e.name,
+        url: e.bottomUrl,
+        num: 0,
+        showReplace: false,
+        showSubmenu: false
+      }))
     }
   }
 }
@@ -86,25 +124,71 @@ export default {
   #cm_drinkdetail_optionbar {
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    padding: 1rem;
+    /*align-items: center;*/
+    padding: 1rem 4rem;
 
     .cm-drinkdetail-option-item {
-      width: 6vw;
+      width: 4rem;
 
       &:hover {
         cursor: pointer;
       }
 
       >p {
-        font-size: 0.8rem;
+        font-size: 1rem;
         margin-bottom: 1rem;
       }
 
       img {
         width: 100%;
       }
+
+      .cm-drinkdetail-option-item-subitemgroup {
+        margin-left: -1.3rem;
+        width: 6rem;
+        position: relative;
+
+        ul {
+          list-style: none;
+          z-index: 999;
+
+          li {
+            padding: 0.6rem;
+            margin-top: 1rem;
+            background: white;
+            color: #6c6c6c;
+            border-radius: 2rem;
+            box-shadow: 3px 3px 2px #999;
+
+            &:nth-of-type(1) {
+              background: white;
+            }
+            &:nth-of-type(2) {
+              background: #bbdeff;
+            }
+            &:nth-of-type(3) {
+              background: #f3ce91;
+            }
+          }
+        }
+
+        .cm-drinkdetail-option-item-subitemgroup-border {
+          position: absolute;
+          border: 0.2rem solid #e6ffff;
+          width: 7rem;
+          height: 20rem;
+          top: -9rem;
+          left: -0.7rem;
+          border-radius: 3rem;
+          box-shadow: 3px 3px 2px #999;
+          z-index: 0;
+        }
+      }
     }
+  }
+
+  .cm-drinkdetail-option-item-submenu-hide {
+    display: none;
   }
 
   .cm-drinkdetail-animation-common {
@@ -183,15 +267,14 @@ export default {
       justify-content: space-around;
       align-items: center;
 
-      .cm-drinkdetail-results-item {
-      margin-left: 1rem;
+      .cm-drinkdetail-results-item>div {
+        margin-left: 1rem;
         display: flex;
         justify-content: space-around;
         align-items: center;
 
-        i.fa {
-          font-size: 1.2rem;
-          margin-right: 0.5rem;
+        >img {
+          height: 2.5rem;
         }
 
         >div {
