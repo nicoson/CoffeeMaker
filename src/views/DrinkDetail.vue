@@ -4,8 +4,7 @@
       <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index" @click="addOption(index)">
         <p>{{recipe[index].showReplace ? flavor.replace.name : flavor.name}}</p>
         <img :src="recipe[index].showReplace ? flavor.replace.iconUrl : flavor.iconUrl" />
-        <div class="cm-drinkdetail-option-item-subitemgroup" :class="{'cm-drinkdetail-option-item-submenu-hide': recipe[index].showSubmenu}" v-if="flavor.subMenu.length != 0">
-          <div class="cm-drinkdetail-option-item-subitemgroup-border"></div>
+        <div class="cm-drinkdetail-option-item-subitemgroup" :class="{'cm-drinkdetail-option-item-submenu-hide': !recipe[index].showSubmenu}" v-if="flavor.subMenu.length != 0">
           <ul>
             <li v-for="(item, subIndex) in flavor.subMenu" :key="subIndex" @click="addOption(index,subIndex)">{{item.name}}</li>
           </ul>
@@ -84,6 +83,15 @@ export default {
       //  handle submenu items
       if (subIndex !== -1) {
         event.stopPropagation()
+        this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
+        if (this.recipe[index].name === this.flavors[index].subMenu[subIndex].name) {
+          if (this.recipe[index].num < 3) {
+            this.recipe[index].num++
+          }
+        } else {
+          this.recipe[index].name = this.flavors[index].subMenu[subIndex].name
+          this.recipe[index].num = 1
+        }
         return
       }
       //  handle items with submenu
@@ -129,6 +137,7 @@ export default {
 
     .cm-drinkdetail-option-item {
       width: 4rem;
+      position: relative;
 
       &:hover {
         cursor: pointer;
@@ -144,9 +153,14 @@ export default {
       }
 
       .cm-drinkdetail-option-item-subitemgroup {
-        margin-left: -1.3rem;
+        position: absolute;
+        border: 0.2rem solid #e6ffff;
         width: 6rem;
-        position: relative;
+        top: -1rem;
+        left: -2.3rem;
+        border-radius: 3rem;
+        box-shadow: 3px 3px 2px #999;
+        padding: 7.5rem 1rem 1rem 1rem;
 
         ul {
           list-style: none;
@@ -154,7 +168,7 @@ export default {
 
           li {
             padding: 0.6rem;
-            margin-top: 1rem;
+            margin-top: 1.2rem;
             background: white;
             color: #6c6c6c;
             border-radius: 2rem;
@@ -172,7 +186,7 @@ export default {
           }
         }
 
-        .cm-drinkdetail-option-item-subitemgroup-border {
+/*        .cm-drinkdetail-option-item-subitemgroup-border {
           position: absolute;
           border: 0.2rem solid #e6ffff;
           width: 7rem;
@@ -182,7 +196,7 @@ export default {
           border-radius: 3rem;
           box-shadow: 3px 3px 2px #999;
           z-index: 0;
-        }
+        }*/
       }
     }
   }
@@ -275,6 +289,7 @@ export default {
 
         >img {
           height: 2.5rem;
+          margin-right: 0.3rem;
         }
 
         >div {

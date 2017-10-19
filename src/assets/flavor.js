@@ -16,7 +16,7 @@ const flavor = [
   {
     name: 'Milk',
     iconUrl: '/static/imgs/coffeeicons/Milk@2x.png',
-    bottomUrl: '/static/imgs/coffeeicons/Sugar@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
     subMenu: [
       {
         name: 'Whole',

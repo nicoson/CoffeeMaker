@@ -64,7 +64,7 @@ export default {
 
   .cm-selectdrink-selection-container {
     height: @containerHeight;
-    margin: 1.5rem 1.5rem 3rem 1.5rem;
+    margin: 3rem 1.5rem 3rem 1.5rem;
     box-shadow: 0 0 2rem #777;
     border-radius: 1rem;
     background: white;

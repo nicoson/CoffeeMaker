@@ -14,15 +14,15 @@
 
     <P class="cm-confirm-title">WHAT SIZE WOULD YOU LIKE?</P>
     <div id="cm_confirm_capsize_container">
-      <div>
+      <div :class="{'cm-confirm-cupSize-notchosen': !(cupSize == 0)}" @click="chooseCupSize(0)">
         <img src="/static/imgs/coffeeicons/Cup@2x.png">
         <p>Tall</p>
       </div>
-      <div>
+      <div :class="{'cm-confirm-cupSize-notchosen': !(cupSize == 1)}" @click="chooseCupSize(1)">
         <img src="/static/imgs/coffeeicons/Cup@2x.png">
         <p>Grande</p>
       </div>
-      <div>
+      <div :class="{'cm-confirm-cupSize-notchosen': !(cupSize == 2)}" @click="chooseCupSize(2)">
         <img src="/static/imgs/coffeeicons/Cup@2x.png">
         <p>Venti</p>
       </div>
@@ -38,7 +38,8 @@ export default {
   data () {
     return {
       name: '',
-      requirements: ''
+      requirements: '',
+      cupSize: 0
     }
   },
   computed: {
@@ -50,8 +51,11 @@ export default {
     }
   },
   methods: {
+    chooseCupSize (size) {
+      this.cupSize = size
+    },
     submit () {
-      console.log(this.type)
+      console.log(this.type, this.options, this.name, this.requirements, this.cupSize)
       this.$router.push({ name: 'Result', params: { name: this.name, type: this.type } })
     }
   }
@@ -135,5 +139,9 @@ export default {
     background: #a25817;
     border-color: #a25817;
     font-size: 1.1rem;
+  }
+
+  .cm-confirm-cupSize-notchosen {
+    opacity: 0.3
   }
 </style>

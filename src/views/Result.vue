@@ -23,6 +23,7 @@ export default {
       return this.$route.params.name
     },
     type: function () {
+      setTimeout(e => this.$router.push({ name: 'home' }), 5000)
       return this.$route.params.type
     }
   }
