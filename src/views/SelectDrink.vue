@@ -48,16 +48,19 @@ export default {
 <style lang="less" scoped>
   .cm-router-container {
     padding: 1rem;
+    height: 100%;
   }
 
   .cm-selectdrink-title {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     text-shadow: 3px 3px 7px #330000;
+    width: 100%;
   }
 
   .cm-selectdrink-footer {
     font-size: 0.8rem;
     margin-top: 2rem;
+    width: 100%;
   }
 
   @containerHeight: 100vw;
@@ -76,8 +79,7 @@ export default {
       .cm-selectdrink-selection-page-col {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
+/*        justify-content: space-between;*/
         color: #666666;
         height: 100%;
         align-content: center;
@@ -101,9 +103,4 @@ export default {
       }
     }
   }
-
-  .mint-swipe-items-wrap {
-
-  }
-
 </style>

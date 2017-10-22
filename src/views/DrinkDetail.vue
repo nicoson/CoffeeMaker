@@ -3,41 +3,54 @@
     <div id="cm_drinkdetail_optionbar">
       <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index" @click="addOption(index)">
         <p>{{recipe[index].showReplace ? flavor.replace.name : flavor.name}}</p>
-        <img :src="recipe[index].showReplace ? flavor.replace.iconUrl : flavor.iconUrl" />
-        <div class="cm-drinkdetail-option-item-subitemgroup" :class="{'cm-drinkdetail-option-item-submenu-hide': !recipe[index].showSubmenu}" v-if="flavor.subMenu.length != 0">
-          <ul>
-            <li v-for="(item, subIndex) in flavor.subMenu" :key="subIndex" @click="addOption(index,subIndex)">{{item.name}}</li>
-          </ul>
-        </div>
+        <img :class="{'tada': iconClick[index]}" :src="recipe[index].showReplace ? flavor.replace.iconUrl : flavor.iconUrl" />
+        <transition name="flip-submenu">
+          <div class="cm-drinkdetail-option-item-subitemgroup" v-if="flavor.subMenu.length != 0 && recipe[index].showSubmenu">
+            <ul>
+              <li v-for="(item, subIndex) in flavor.subMenu" :key="subIndex" @click="addOption(index,subIndex)">{{item.name}}</li>
+            </ul>
+          </div>
+        </transition>
       </div>
     </div>
 
+    <div class="cm-common-itemspace"></div>
+
     <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0">
-      <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png">
-      <p class="cm-drinkdetail-animation-title">{{type}}</p>
-      <div class="cm-drinkdetail-animation-hot"></div>
+      <div class="cm-drinkdetail-animation-png">        
+        <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png">
+        <p class="cm-drinkdetail-animation-title">{{type}}</p>
+        <div class="cm-drinkdetail-animation-hot">
+          <img src="/static/imgs/coffeeicons/Smoke@2x.png">
+        </div>
+      </div>
+      <!-- <img class="cm-drinkdetail-animation-gif" src="/static/imgs/coffeeicons/AddSugar.gif"> -->
     </div>
     <div id="cm_drinkdetail_animation" v-else>
-      <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png">
-      <p class="cm-drinkdetail-animation-title">{{type}}</p>
-      <div class="cm-drinkdetail-animation-iced">
-        <img src="/static/imgs/coffeeicons/Ice@2x.png">
-        <img src="/static/imgs/coffeeicons/Ice@2x.png">
-        <img src="/static/imgs/coffeeicons/Ice@2x.png">
-        <img src="/static/imgs/coffeeicons/Ice@2x.png">
+      <div class="cm-drinkdetail-animation-png">        
+        <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png">
+        <p class="cm-drinkdetail-animation-title">{{type}}</p>
+        <div class="cm-drinkdetail-animation-iced">
+          <img src="/static/imgs/coffeeicons/Ice@2x.png">
+          <img src="/static/imgs/coffeeicons/Ice@2x.png">
+          <img src="/static/imgs/coffeeicons/Ice@2x.png">
+          <img src="/static/imgs/coffeeicons/Ice@2x.png">
+        </div>
       </div>
     </div>
 
     <div id="cm_drinkdetail_footerbar">
       <div id="cm_drinkdetail_results">
         <div class="cm-drinkdetail-results-item" v-for="(item, index) in recipe" :key="index">
-          <div v-if="item.num != 0">
-            <img :src="item.url">
-            <div>
-              <p>{{item.name}}</p>
-              <p v-if="item.num > 0">+{{item.num}}</p>
+          <transition name="rotate-footmenu">
+            <div v-if="item.num != 0">
+              <img :src="item.url">
+              <div>
+                <p>{{item.name}}</p>
+                <p v-if="item.num > 0">+{{item.num}}</p>
+              </div>
             </div>
-          </div>
+          </transition>
         </div>
       </div>
       <div class="cm-common-itemspace"></div>
@@ -57,7 +70,8 @@ export default {
   data () {
     return {
       flavors: Flavors,
-      recipe: []
+      recipe: [],
+      iconClick: Flavors.map(e => false)
     }
   },
   computed: {
@@ -94,11 +108,18 @@ export default {
         }
         return
       }
+
       //  handle items with submenu
       if (this.flavors[index].subMenu.length !== 0 && subIndex === -1) {
         this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
         return
       }
+
+      //  add click effect
+      this.iconClick[index] = true
+      let that = this
+      // let ele = event.target
+      setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
 
       //  handle binary choice - ice/hot caf/decaf
       if (this.flavors[index].replace !== null) {
@@ -185,24 +206,8 @@ export default {
             }
           }
         }
-
-/*        .cm-drinkdetail-option-item-subitemgroup-border {
-          position: absolute;
-          border: 0.2rem solid #e6ffff;
-          width: 7rem;
-          height: 20rem;
-          top: -9rem;
-          left: -0.7rem;
-          border-radius: 3rem;
-          box-shadow: 3px 3px 2px #999;
-          z-index: 0;
-        }*/
       }
     }
-  }
-
-  .cm-drinkdetail-option-item-submenu-hide {
-    display: none;
   }
 
   .cm-drinkdetail-animation-common {
@@ -212,66 +217,93 @@ export default {
   }
 
   #cm_drinkdetail_animation {
-    position: absolute;
-    bottom: 8rem;
-    left: 30%;
-    width: 40%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-end;
 
-    >img {
-      width: 100%;
-    }
+    div.cm-drinkdetail-animation-png {
+/*      position: absolute;
+      bottom: 8rem;
+      left: 30%;*/
+      width: 40%;
+      margin: 0 auto -8rem auto;
+      position: relative;
 
-    p.cm-drinkdetail-animation-title {
-      font-size: 1.5rem;
-    }
 
-    .cm-drinkdetail-animation-hot {
-      .cm-drinkdetail-animation-common;
-    }
+      >img:first-child {
+        width: 100%;
+      }
 
-    .cm-drinkdetail-animation-iced {
-      .cm-drinkdetail-animation-common;
+      p.cm-drinkdetail-animation-title {
+        font-size: 1.5rem;
+      }
 
-      img {
-        position: absolute;
+      .cm-drinkdetail-animation-hot {
+        .cm-drinkdetail-animation-common;
 
-        &:nth-of-type(1){
-          width: 6rem;
-          left: -18rem;
-          top: 2rem;
-          transform: rotate(10deg);
+        img {
+          position: absolute;
+          width: 10rem;
+          left: -5rem;
+          top: -21rem;
+          animation: smoke 4s infinite linear;
         }
+      }
 
-        &:nth-of-type(2){
-          width: 3rem;
-          left: -11rem;
-          top: -1rem;
-          transform: rotate(0deg);
-        }
+      .cm-drinkdetail-animation-iced {
+        .cm-drinkdetail-animation-common;
 
-        &:nth-of-type(3){
-          width: 2.5rem;
-          left: 8rem;
-          top: -5rem;
-          transform: rotate(30deg);
-        }
+        img {
+          position: absolute;
+          animation: snow 5s infinite;
 
-        &:nth-of-type(4){
-          width: 6rem;
-          left: 13rem;
-          top: -15rem;
-          transform: rotate(0deg);
+          &:nth-of-type(1){
+            width: 6rem;
+            left: -18rem;
+            top: 2rem;
+            transform: rotate(10deg);
+          }
+
+          &:nth-of-type(2){
+            width: 3rem;
+            left: -11rem;
+            top: -1rem;
+            transform: rotate(0deg);
+            animation-delay: -3s;
+          }
+
+          &:nth-of-type(3){
+            width: 2.5rem;
+            left: 8rem;
+            top: -5rem;
+            transform: rotate(30deg);
+            animation-delay: -1s;
+          }
+
+          &:nth-of-type(4){
+            width: 6rem;
+            left: 13rem;
+            top: -15rem;
+            transform: rotate(0deg);
+            animation-delay: -4s;
+          }
         }
       }
     }
+  }
+
+  .cm-drinkdetail-animation-gif {
+    position: absolute;
+    bottom: -12rem;
+    left: -18rem;
+    width: 55rem;
   }
 
   #cm_drinkdetail_footerbar {
     display: flex;
     justify-content: space-around;
     align-items: flex-end;
-    position: absolute;
-    bottom: 0;
     width: 100vw;
     padding: 2rem;
     box-sizing: border-box;
@@ -280,6 +312,7 @@ export default {
       display: flex;
       justify-content: space-around;
       align-items: center;
+      animation: shinning 2s infinite;
 
       .cm-drinkdetail-results-item>div {
         margin-left: 1rem;
@@ -326,5 +359,222 @@ export default {
 
   .cm-drinkdetail-button-cancel {
     .cm-common-btn
+  }
+
+  .animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+  }
+
+  .flip-submenu-enter-active{
+      -webkit-backface-visibility: visible !important;
+      backface-visibility: visible !important;
+      animation-name: flipInY;
+      .animated;
+  }
+
+  .flip-submenu-leave-active{
+      -webkit-backface-visibility: visible !important;
+      backface-visibility: visible !important;
+      animation-name: flipOutY;
+      .animated;
+  }
+
+  .flipInY {
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+    animation-name: flipInY;
+    .animated;
+  }
+
+  .flipOutY {
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+    animation-name: flipOutY;
+    .animated;
+  }
+
+  .rotateIn {
+    animation-name: rotateIn;
+    .animated;
+  }
+
+  .rotate-footmenu-enter-active {
+    animation-name: rotateIn;
+    .animated;
+  }
+
+  .rotate-footmenu-leave-active {
+    animation-name: rotateOut;
+    .animated;
+  }
+
+  @keyframes flipInY {
+    from {
+      transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+      animation-timing-function: ease-in;
+      opacity: 0;
+    }
+
+    40% {
+      transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+      animation-timing-function: ease-in;
+    }
+
+    60% {
+      transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+      opacity: 1;
+    }
+
+    80% {
+      transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+    }
+
+    to {
+      transform: perspective(400px);
+    }
+  }
+
+  @keyframes flipOutY {
+    from {
+      transform: perspective(400px);
+    }
+
+    30% {
+      transform: perspective(400px) rotate3d(0, 1, 0, -15deg);
+      opacity: 1;
+    }
+
+    to {
+      transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes rotateIn {
+    from {
+      transform-origin: center;
+      transform: rotate3d(0, 0, 1, -200deg);
+      opacity: 0;
+    }
+
+    to {
+      transform-origin: center;
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  @keyframes rotateOut {
+    from {
+      transform-origin: center;
+      opacity: 1;
+    }
+
+    to {
+      transform-origin: center;
+      transform: rotate3d(0, 0, 1, 200deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes shinning {
+    from {
+      animation-timing-function: linear;
+      opacity: 1;
+    }
+
+    25% {
+      opacity: 0.75;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+
+    75% {
+      opacity: 0.75;
+    }
+
+    to {
+      animation-timing-function: linear;
+      opacity: 1;
+    }
+  }
+
+  @keyframes smoke {
+    from {
+      transform:translate(0, 0rem);
+    }
+
+    25% {
+      transform:translate(0, -1.5rem);
+    }
+
+    50% {
+      transform:translate(0, 0rem);
+    }
+
+    75% {
+      transform:translate(0, 1.5rem);
+    }
+
+    to {
+      transform:translate(0, 0rem);
+    }
+  }
+
+  @keyframes snow {
+    from {
+      animation-timing-function: linear;
+      transform:translate(0, 0rem) rotate(0);
+    }
+
+    25% {
+      animation-timing-function: linear;
+      transform:translate(1rem, -2rem) rotate(90deg);
+    }
+
+    50% {
+      animation-timing-function: linear;
+      transform:translate(2rem, 0rem) rotate(180deg);
+    }
+
+    75% {
+      animation-timing-function: linear;
+      transform:translate(1rem, 2rem) rotate(270deg);
+    }
+
+    to {
+      animation-timing-function: linear;
+      transform:translate(0, 0rem) rotate(360deg);
+    }
+  }
+
+  .tada {
+    .animated;
+    animation-name: tada;
+  }
+
+  @keyframes tada {
+    from {
+      transform: scale3d(1, 1, 1);
+    }
+
+    10%, 20% {
+      transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -10deg);
+    }
+
+    30%, 50%, 70%, 90% {
+      transform: scale3d(1.5, 1.5, 1.5) rotate3d(0, 0, 1, 10deg);
+    }
+
+    40%, 60%, 80% {
+      transform: scale3d(1.5, 1.5, 1.5) rotate3d(0, 0, 1, -10deg);
+    }
+
+    to {
+      transform: scale3d(1, 1, 1);
+    }
   }
 </style>

@@ -9,7 +9,7 @@ const flavor = [
   {
     name: 'Cream',
     iconUrl: '/static/imgs/coffeeicons/Cream@2x.png',
-    bottomUrl: '/static/imgs/coffeeicons/Cream@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/Cream_S@2x.png',
     subMenu: [],
     replace: null
   },
@@ -42,7 +42,7 @@ const flavor = [
   {
     name: 'Decaf',
     iconUrl: '/static/imgs/coffeeicons/Decaf@2x.png',
-    bottomUrl: '/static/imgs/coffeeicons/Decaf@2x.png',
+    bottomUrl: '/static/imgs/coffeeicons/Caf_S@2x.png',
     subMenu: [],
     replace: {
       name: 'Caf',
@@ -64,10 +64,10 @@ const flavor = [
   {
     name: 'Shot',
     iconUrl: '/static/imgs/coffeeicons/Shot.png',
-    bottomUrl: '/static/imgs/coffeeicons/Shot.png',
+    bottomUrl: '/static/imgs/coffeeicons/Shot_S@2x.png',
     subMenu: [],
     replace: {
-      name: 'No Shot',
+      name: 'Noshot',
       iconUrl: '/static/imgs/coffeeicons/Shot.png',
       bottomUrl: ''
     }
