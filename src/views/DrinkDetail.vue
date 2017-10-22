@@ -16,7 +16,7 @@
 
     <div class="cm-common-itemspace"></div>
 
-    <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0">
+    <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0 && animationUrl.length === 0">
       <div class="cm-drinkdetail-animation-png">        
         <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
@@ -24,9 +24,8 @@
           <img src="/static/imgs/coffeeicons/Smoke@2x.png">
         </div>
       </div>
-      <!-- <img class="cm-drinkdetail-animation-gif" src="/static/imgs/coffeeicons/AddSugar.gif"> -->
     </div>
-    <div id="cm_drinkdetail_animation" v-else>
+    <div id="cm_drinkdetail_animation" v-else-if="animationUrl.length === 0">
       <div class="cm-drinkdetail-animation-png">        
         <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
@@ -60,6 +59,8 @@
         <div class="cm-drinkdetail-button-cancel" @click="goBack">BACK</div>
       </div>
     </div>
+
+    <img class="cm-drinkdetail-animation-gif" v-if="animationUrl.length > 0" src='' />
   </div>
 </template>
 
@@ -71,7 +72,8 @@ export default {
     return {
       flavors: Flavors,
       recipe: [],
-      iconClick: Flavors.map(e => false)
+      iconClick: Flavors.map(e => false),
+      animationUrl: ''
     }
   },
   computed: {
@@ -86,7 +88,7 @@ export default {
   methods: {
     goBack () {
       this.resetOption()  //  reset custom options
-      this.$router.go(-1)
+      this.$router.push('/')
     },
     goConfirm () {
       this.$router.push({ name: 'Confirm', params: { type: this.type, options: this.recipe } })
@@ -101,10 +103,14 @@ export default {
         if (this.recipe[index].name === this.flavors[index].subMenu[subIndex].name) {
           if (this.recipe[index].num < 3) {
             this.recipe[index].num++
+            //  trigger png animation
+            this.animateTrigger(index)
           }
         } else {
           this.recipe[index].name = this.flavors[index].subMenu[subIndex].name
           this.recipe[index].num = 1
+          //  trigger png animation
+          this.animateTrigger(index)
         }
         return
       }
@@ -118,8 +124,10 @@ export default {
       //  add click effect
       this.iconClick[index] = true
       let that = this
-      // let ele = event.target
       setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
+
+      //  trigger png animation
+      this.animateTrigger(index)
 
       //  handle binary choice - ice/hot caf/decaf
       if (this.flavors[index].replace !== null) {
@@ -134,6 +142,32 @@ export default {
           this.recipe[index].num++
         }
       }
+    },
+    animateTrigger (index) {
+      switch (index) {
+        case 0:
+          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          setTimeout(function () {
+            document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = '/static/imgs/coffeeicons/AddSugar.gif'
+          }, 100)
+          break
+        case 1:
+          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          break
+        case 2:
+          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          break
+        case 3:
+          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          break
+        case 4:
+          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          break
+        case 5:
+          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          break
+      }
+      setTimeout(e => (this.animationUrl = ''), 2000)
     },
     resetOption () {
       this.recipe = Flavors.map(e => ({
@@ -221,15 +255,12 @@ export default {
     display: flex;
     flex-direction: column;
     align-content: flex-end;
+    position: relative;
 
     div.cm-drinkdetail-animation-png {
-/*      position: absolute;
-      bottom: 8rem;
-      left: 30%;*/
       width: 40%;
       margin: 0 auto -8rem auto;
       position: relative;
-
 
       >img:first-child {
         width: 100%;
@@ -291,13 +322,28 @@ export default {
         }
       }
     }
+
+/*    div.cm-drinkdetail-animation-gif {
+      position: absolute;
+      bottom: 0rem;
+      left: 0rem;
+      width: 100%;
+      height: 0;
+
+      img {
+        width: 50rem;
+        position: absolute;
+        bottom: -16rem;
+        left: 0;
+      }
+    }*/
   }
 
   .cm-drinkdetail-animation-gif {
-    position: absolute;
-    bottom: -12rem;
-    left: -18rem;
-    width: 55rem;
+    position: fixed;
+    bottom: -1.9rem;
+    width: 105%;
+    left: -1.5rem;
   }
 
   #cm_drinkdetail_footerbar {

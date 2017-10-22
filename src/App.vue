@@ -22,8 +22,8 @@ export default {
     HeaderBar
   },
   mounted () {
-    console.log(window.outerHeight, document.getElementsByClassName('cm-headerbar')[0].clientHeight)
-    this.routeViewHeight = window.outerHeight - document.getElementsByClassName('cm-headerbar')[0].clientHeight
+    console.log(window.outerHeight, document.getElementsByTagName('body')[0].clientHeight, document.getElementsByClassName('cm-headerbar')[0].clientHeight)
+    this.routeViewHeight = document.getElementsByTagName('body')[0].clientHeight - document.getElementsByClassName('cm-headerbar')[0].clientHeight
   },
   watch: {
     '$route' (to, from) {
@@ -75,10 +75,11 @@ body {
 .child-view {
   box-sizing: border-box;
   transition: all .5s cubic-bezier(.55,0,.1,1);
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   display: flex;
   flex-direction: column;
   align-content: space-between;
+  overflow: hidden;
 }
 
 .slide-right-leave-active {  
