@@ -1,13 +1,18 @@
 <template>
   <div class="cm-router-container">
     <p class="cm-result-t1">SUCCESS</p>
-    <P class="cm-result-t2">We're preparing your coffee now....</P>
+    <P class="cm-result-t2">
+      Your coffee order has been submitted to our receptionist successfully. It will be provided to you shortly.
+      </br>
+      </br>
+      Thank you!
+    </P>
     <div class="cm-result-cupgroup">
       <img src="/static/imgs/coffeeicons/IcedDrink@2x.png">
       <p class="cm-result-cupgroup-name">{{name}}</p>
     </div>
     <p class="cm-result-t3">{{type}}</p>
-    <mt-popup v-model="popupVisible" popup-transition="popup-fade" position="top">
+    <mt-popup v-model="popupVisible" popup-transition="popup-fade" position="top" :modal="false">
       Will leave the page within {{popupRemainTime}} secs
     </mt-popup>
   </div>
@@ -19,7 +24,7 @@ export default {
   data () {
     return {
       popupVisible: true,
-      popupRemainTime: 5
+      popupRemainTime: 6
     }
   },
   computed: {
@@ -63,6 +68,8 @@ export default {
     font-weight: 100;
     font-size: 1.7rem;
     color: #e6ffff;
+    width: 70%;
+    margin: 0 auto;
   }
 
   .cm-result-t3 {

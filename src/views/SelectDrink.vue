@@ -39,7 +39,7 @@ export default {
   methods: {
     goDetail (type) {
       localStorage.setItem('coffeeType', type)
-      setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 500)
+      setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 200)
     }
   }
 }
