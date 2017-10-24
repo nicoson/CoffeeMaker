@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { Indicator } from 'mint-ui'
+// import { Indicator } from 'mint-ui'
 export default {
   name: 'Confirm',
   data () {
@@ -81,9 +81,9 @@ export default {
       }
 
       //  submit value
-      Indicator.open({
-        spinnerType: 'fading-circle'
-      })
+      // Indicator.open({
+      //   spinnerType: 'fading-circle'
+      // })
 
       let data = {
         'DrinkName': this.type,
@@ -98,25 +98,7 @@ export default {
         'Cup': this.cupSize
       }
 
-      var headers = new Headers()
-      headers.append('Content-Type', 'application/json')
-      let that = this
-      fetch('/api/CoffeeMaker/Booking', {
-        body: JSON.stringify(data),
-        headers: headers,
-        method: 'POST'
-      })
-      .then(res => res.json())
-      .then(function (e) {
-        Indicator.close()
-        that.$router.push({ name: 'Result', params: { name: that.name, type: that.type } })
-      })
-      .catch(function (e) {
-        Indicator.close()
-        that.popupVisible = true
-        that.popupContent = 'Something error happened, please try again!'
-        setTimeout(e => (that.popupVisible = false), 2000)
-      })
+      this.$router.push({ name: 'Result', params: { name: this.name, type: this.type, data: data } })
       // console.log(this.type, this.options, this.name, this.requirements, this.cupSize)
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="cm-headerbar">
-    <div id="cm_headerbar_menuicon" class="cm-headerbar-item">
+<!--     <div id="cm_headerbar_menuicon" class="cm-headerbar-item">
       <i class="fa fa-bars" aria-hidden="true"></i>
     </div>
     <div class="cm-common-itemspace"></div>
@@ -11,7 +11,7 @@
     </div>
     <div id="cm_headerbar_helper" class="cm-headerbar-item">
       <i class="fa fa-microphone" aria-hidden="true">&nbsp;&nbsp;HELP</i>
-    </div>
+    </div> -->
   </div>
 </template>
 

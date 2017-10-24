@@ -54,7 +54,7 @@ export default {
 
   .cm-selectdrink-title {
     font-size: 1.7rem;
-    text-shadow: 3px 3px 7px #330000;
+    text-shadow: 3px 3px 7px #666;
     width: 100%;
   }
 

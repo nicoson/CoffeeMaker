@@ -43,11 +43,10 @@
         <div class="cm-drinkdetail-results-item" v-for="(item, index) in recipe" :key="index">
           <transition name="rotate-footmenu">
             <div v-if="item.num != 0">
-              <img :src="item.url">
               <div>
-                <p>{{item.name}}</p>
-                <p v-if="item.num > 0">+{{item.num}}</p>
+                <p>{{item.name}}<span v-if="item.num > 0">&nbsp;+{{item.num}}</span></p>
               </div>
+              <img :src="item.url">
             </div>
           </transition>
         </div>
@@ -61,6 +60,10 @@
     </div>
 
     <img class="cm-drinkdetail-animation-gif" v-if="animationUrl.length > 0" />
+    <div :class="{'cm-drinkdetail-animation-addEffect': (animationUrl.length === 0) ? false : true, 'cm-drinkdetail-animation-noEffect': (animationUrl.length === 0) ? true : false}">
+      <p>{{currentChoice}}</p>
+      <p>+1</p>
+    </div>
   </div>
 </template>
 
@@ -86,7 +89,8 @@ export default {
       flavors: Flavors,
       recipe: [],
       iconClick: Flavors.map(e => false),
-      animationUrl: ''
+      animationUrl: '',
+      currentChoice: ''
     }
   },
   computed: {
@@ -117,14 +121,14 @@ export default {
           if (this.recipe[index].num < 3) {
             this.recipe[index].num++
             //  trigger png animation
-            this.animateTrigger(index)
+            this.animateTrigger(index, subIndex)
           }
         } else {
           this.recipe[index].name = this.flavors[index].subMenu[subIndex].name
           this.flavors[index].iconUrl = this.flavors[index].subMenu[subIndex].iconUrl
           this.recipe[index].num = 1
           //  trigger png animation
-          this.animateTrigger(index)
+          this.animateTrigger(index, subIndex)
         }
         return
       }
@@ -140,9 +144,6 @@ export default {
       let that = this
       setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
 
-      //  trigger png animation
-      this.animateTrigger(index)
-
       //  handle binary choice - ice/hot caf/decaf
       if (this.flavors[index].replace !== null) {
         this.recipe[index].showReplace = !this.recipe[index].showReplace
@@ -156,38 +157,57 @@ export default {
           this.recipe[index].num++
         }
       }
+
+      //  trigger png animation
+      this.animateTrigger(index, subIndex)
     },
-    animateTrigger (index) {
+    animateTrigger (index, subIndex) {
+      this.currentChoice = this.recipe[index].name
       switch (index) {
         case 0:
-          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          //  sugar/no sugar
+          this.animationUrl = this.flavors[index].animationUrl
           this.$nextTick(bindUrl(this.animationUrl))
           break
         case 1:
-          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          //  cream/no cream
+          this.animationUrl = this.flavors[index].animationUrl
           this.$nextTick(bindUrl(this.animationUrl))
           break
         case 2:
-          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          //  whole/skim/soya milk
+          this.animationUrl = this.flavors[index].subMenu[subIndex].animationUrl
           this.$nextTick(bindUrl(this.animationUrl))
           break
         case 3:
-          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
-          this.$nextTick(bindUrl(this.animationUrl))
+          //  decaf/caf
+          if (this.recipe[index].name !== this.flavors[index].name) {
+            this.animationUrl = this.flavors[index].replace.animationUrl
+            this.$nextTick(bindUrl(this.animationUrl))
+          } else {
+            return
+          }
           break
         case 4:
-          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
-          this.$nextTick(bindUrl(this.animationUrl))
-          break
+          //  add ice/hot
+          // this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          // this.$nextTick(bindUrl(this.animationUrl))
+          // break
+          return
         case 5:
+          //  shot/no shot
           // this.animationUrl = '/static/imgs/coffeeicons/AddShot.gif'
-          this.animationUrl = '/static/imgs/coffeeicons/Shot/Shot_000'
-          this.$nextTick(test(this.animationUrl))
+          if (this.recipe[index].name === this.flavors[index].name) {
+            this.animationUrl = this.flavors[index].animationUrl
+          } else {
+            return
+          }
           break
       }
+      this.$nextTick(test(this.animationUrl))
       // this.$nextTick(bindUrl(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
       // this.$nextTick(test(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
-      setTimeout(e => (this.animationUrl = ''), 2500)
+      setTimeout(e => (this.animationUrl = ''), 2000)
     },
     resetOption () {
       this.recipe = Flavors.map(e => ({
@@ -211,7 +231,7 @@ export default {
     padding: 1rem 4rem;
 
     .cm-drinkdetail-option-item {
-      width: 4rem;
+      width: 5rem;
       position: relative;
 
       &:hover {
@@ -219,7 +239,7 @@ export default {
       }
 
       >p {
-        font-size: 1rem;
+        font-size: 1.2rem;
         margin-bottom: 1rem;
       }
 
@@ -232,7 +252,7 @@ export default {
         border: 0.2rem solid #e6ffff;
         width: 6rem;
         top: -1rem;
-        left: -2.3rem;
+        left: -1.9rem;
         border-radius: 3rem;
         box-shadow: 3px 3px 2px #999;
         padding: 7.5rem 1rem 1rem 1rem;
@@ -352,11 +372,32 @@ export default {
 
   .cm-drinkdetail-animation-gif {
     position: fixed;
-    bottom: 0rem;
+    bottom: 1rem;
     width: 105%;
     left: -1.5rem;
   }
 
+  .cm-drinkdetail-animation-addEffect {
+    position: fixed;
+    left: 50%;
+    bottom: 50%;
+    padding: 2rem;
+    margin-left: -4.5rem;
+    transform: scale(0.1, 0.1);
+    animation: addEffect 2s linear;
+
+    p:first-child {
+      font-size: 2rem;
+    }
+
+    p:last-child {
+      font-size: 5rem;
+    }
+  }
+
+  .cm-drinkdetail-animation-noEffect {
+    display: none;
+  }
   #cm_drinkdetail_footerbar {
     display: flex;
     justify-content: space-around;
@@ -372,39 +413,32 @@ export default {
       animation: shinning 2s infinite;
 
       .cm-drinkdetail-results-item>div {
-        margin-left: 1rem;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
+        margin-left: 1.5rem;
 
         >img {
-          height: 2.5rem;
-          margin-right: 0.3rem;
+          height: 4rem;
         }
 
         >div {
-          font-size: 0.8rem;
-          >p:first-child {
-            margin-bottom:0.3rem;
-          }
+          font-size: 1rem;
         }
       }
     }
   }
 
   .cm-common-btn {
-    width: 4rem;
+    width: 5rem;
     height: 2.5rem;
-    padding: 0 1rem;
+    padding: 0.5rem 1.5rem;
     border-radius: 2rem;
     color: white;
     border: 1px solid white;
     vertical-align: middle;
-    font-size: 0.8rem;
+    font-size: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 1.7rem;
+    margin-top: 1.2rem;
     box-shadow: 1px 1px 3px #777;
   }
 
@@ -638,6 +672,53 @@ export default {
 
     to {
       transform: scale3d(1, 1, 1);
+    }
+  }
+
+  @keyframes addEffect {
+    from {
+      position: fixed;
+      left: 50%;
+      bottom: 50%;
+      padding: 2rem;
+      margin-left: -4.5rem;
+      transform: scale(0.1, 0.1);
+      opacity: 1;
+    }
+
+    20% {
+      left: 50%;
+      bottom: 50%;
+      transform: scale(1, 1) scale(1, 1);
+      opacity: 1;
+    }
+
+    60% {
+      left: 50%;
+      bottom: 50%;
+      transform: scale(1, 1) rotate(0);
+      opacity: .8;
+    }
+
+    70% {
+      left: 40%;
+      bottom: 60%;
+      transform: scale(1, 1) rotate(360deg);
+      opacity: .6;
+    }
+
+    80% {
+      left: 30%;
+      bottom: 50%;
+      transform: scale(1, 1) rotate(720deg);
+      opacity: .4;
+    }
+
+    to {
+      left: 10%;
+      bottom: 0;
+      transform: scale(0.1, 0.1) rotate(2000deg);
+      opacity: .2;
     }
   }
 </style>
