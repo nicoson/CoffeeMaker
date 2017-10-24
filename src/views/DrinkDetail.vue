@@ -16,16 +16,16 @@
 
     <div class="cm-common-itemspace"></div>
 
-    <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0 && animationUrl.length === 0">
+    <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0">
       <div class="cm-drinkdetail-animation-png">        
-        <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png">
+        <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png" style="{visibility: (animationUrl.length===0) ? visible : hidden}">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
         <div class="cm-drinkdetail-animation-hot">
           <img src="/static/imgs/coffeeicons/Smoke@2x.png">
         </div>
       </div>
     </div>
-    <div id="cm_drinkdetail_animation" v-else-if="animationUrl.length === 0">
+    <div id="cm_drinkdetail_animation" v-else>
       <div class="cm-drinkdetail-animation-png">        
         <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
@@ -60,12 +60,25 @@
       </div>
     </div>
 
-    <img class="cm-drinkdetail-animation-gif" v-if="animationUrl.length > 0" src='' />
+    <img class="cm-drinkdetail-animation-gif" v-if="animationUrl.length > 0" />
   </div>
 </template>
 
 <script>
 import Flavors from '@/assets/flavor'
+
+ // replay the gif by using global function, in case of VUE refresh trap
+function bindUrl (url) {
+  setTimeout(e => (document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = url), 100)
+}
+
+function test (url) {
+  for (let i = 0; i < 51; i++) {
+    let src = url + (100 + i).toString().slice(1) + '.png'
+    setTimeout(e => (document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = src), i * 50)
+  }
+}
+
 export default {
   name: 'DrinkDetail',
   data () {
@@ -78,7 +91,7 @@ export default {
   },
   computed: {
     type: function () {
-      return this.$route.params.type
+      return this.$route.params.type ? this.$route.params.type : localStorage.coffeeType
     }
   },
   created () {
@@ -108,6 +121,7 @@ export default {
           }
         } else {
           this.recipe[index].name = this.flavors[index].subMenu[subIndex].name
+          this.flavors[index].iconUrl = this.flavors[index].subMenu[subIndex].iconUrl
           this.recipe[index].num = 1
           //  trigger png animation
           this.animateTrigger(index)
@@ -147,27 +161,33 @@ export default {
       switch (index) {
         case 0:
           this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
-          setTimeout(function () {
-            document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = '/static/imgs/coffeeicons/AddSugar.gif'
-          }, 100)
+          this.$nextTick(bindUrl(this.animationUrl))
           break
         case 1:
           this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          this.$nextTick(bindUrl(this.animationUrl))
           break
         case 2:
           this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          this.$nextTick(bindUrl(this.animationUrl))
           break
         case 3:
           this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          this.$nextTick(bindUrl(this.animationUrl))
           break
         case 4:
           this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          this.$nextTick(bindUrl(this.animationUrl))
           break
         case 5:
-          this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
+          // this.animationUrl = '/static/imgs/coffeeicons/AddShot.gif'
+          this.animationUrl = '/static/imgs/coffeeicons/Shot/Shot_000'
+          this.$nextTick(test(this.animationUrl))
           break
       }
-      setTimeout(e => (this.animationUrl = ''), 2000)
+      // this.$nextTick(bindUrl(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
+      // this.$nextTick(test(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
+      setTimeout(e => (this.animationUrl = ''), 3000)
     },
     resetOption () {
       this.recipe = Flavors.map(e => ({
@@ -259,7 +279,7 @@ export default {
 
     div.cm-drinkdetail-animation-png {
       width: 40%;
-      margin: 0 auto -8rem auto;
+      margin: 0 auto -10rem auto;
       position: relative;
 
       >img:first-child {
@@ -268,6 +288,7 @@ export default {
 
       p.cm-drinkdetail-animation-title {
         font-size: 1.5rem;
+        height: 4rem;
       }
 
       .cm-drinkdetail-animation-hot {
@@ -278,7 +299,8 @@ export default {
           width: 10rem;
           left: -5rem;
           top: -21rem;
-          animation: smoke 4s infinite linear;
+          animation: smoke 5s infinite linear;
+          transform: translate(0, 0rem) rotateY(90deg);
         }
       }
 
@@ -322,26 +344,11 @@ export default {
         }
       }
     }
-
-/*    div.cm-drinkdetail-animation-gif {
-      position: absolute;
-      bottom: 0rem;
-      left: 0rem;
-      width: 100%;
-      height: 0;
-
-      img {
-        width: 50rem;
-        position: absolute;
-        bottom: -16rem;
-        left: 0;
-      }
-    }*/
   }
 
   .cm-drinkdetail-animation-gif {
     position: fixed;
-    bottom: -1.9rem;
+    bottom: 0rem;
     width: 105%;
     left: -1.5rem;
   }
@@ -548,25 +555,31 @@ export default {
     }
   }
 
+  @smoke-start: 1rem;
+  @smoke-step: 1.5rem;
   @keyframes smoke {
     from {
-      transform:translate(0, 0rem);
+      transform: translate(0, @smoke-start) rotateY(90deg);
     }
 
-    25% {
-      transform:translate(0, -1.5rem);
+    20% {
+      transform: translate(0, @smoke-start - @smoke-step) rotateY(90deg + 45deg);
     }
 
-    50% {
-      transform:translate(0, 0rem);
+    40% {
+      transform: translate(0, @smoke-start - 2*@smoke-step) rotateY(90deg + 2*45deg);
     }
 
-    75% {
-      transform:translate(0, 1.5rem);
+    60% {
+      transform: translate(0, @smoke-start - 3*@smoke-step) rotateY(90deg + 3*45deg);
+    }
+
+    80% {
+      transform: translate(0, @smoke-start - 4*@smoke-step) rotateY(90deg + 4*45deg);
     }
 
     to {
-      transform:translate(0, 0rem);
+      transform: translate(0, @smoke-start - 4*@smoke-step) rotateY(90deg + 4*45deg);
     }
   }
 

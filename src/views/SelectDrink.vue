@@ -38,6 +38,7 @@ export default {
   },
   methods: {
     goDetail (type) {
+      localStorage.setItem('coffeeType', type)
       setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 500)
     }
   }
@@ -59,7 +60,7 @@ export default {
 
   .cm-selectdrink-footer {
     font-size: 0.8rem;
-    margin-top: 2rem;
+    margin-top: 0rem;
     width: 100%;
   }
 
@@ -83,6 +84,7 @@ export default {
         color: #666666;
         height: 100%;
         align-content: center;
+        align-items: flex-start;
 
         .cm-selectdrink-selection-page-col-item {
           padding: 1.5rem;

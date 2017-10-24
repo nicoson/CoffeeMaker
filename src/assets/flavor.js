@@ -26,7 +26,7 @@ const flavor = [
       },
       {
         name: 'Skim',
-        iconUrl: '/static/imgs/coffeeicons/Milk@2x.png',
+        iconUrl: '/static/imgs/coffeeicons/Skim@2x.png',
         bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
         color: '#bbdeff'
       },

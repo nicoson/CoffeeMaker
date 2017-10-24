@@ -7,6 +7,9 @@
       <p class="cm-result-cupgroup-name">{{name}}</p>
     </div>
     <p class="cm-result-t3">{{type}}</p>
+    <mt-popup v-model="popupVisible" popup-transition="popup-fade" position="top">
+      Will leave the page within {{popupRemainTime}} secs
+    </mt-popup>
   </div>
 </template>
 
@@ -15,7 +18,8 @@ export default {
   name: 'Result',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      popupVisible: true,
+      popupRemainTime: 5
     }
   },
   computed: {
@@ -23,8 +27,21 @@ export default {
       return this.$route.params.name
     },
     type: function () {
-      setTimeout(e => this.$router.push({ name: 'home' }), 5000)
       return this.$route.params.type
+    }
+  },
+  created () {
+    this.countBack()
+  },
+  methods: {
+    countBack () {
+      if (this.popupRemainTime > 0) {
+        this.popupRemainTime--
+        setTimeout(this.countBack, 1000)
+      } else {
+        this.popupVisible = false
+        setTimeout(e => this.$router.push({ name: 'home' }), 1000)
+      }
     }
   }
 }
@@ -73,4 +90,11 @@ export default {
     }
   }
 
+  /* mint-ui component css */
+  .mint-popup {
+    padding: 2rem;
+    font-size: 1.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 1rem;
+  }
 </style>

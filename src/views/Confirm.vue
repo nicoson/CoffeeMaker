@@ -8,7 +8,7 @@
 
     <P class="cm-confirm-title">PLEASE INPUT YOUR NAME OR SCAN FACE</P>
     <div class="cm-confirm-inputgroup">
-      <input type="text" name="" v-model="name" />
+      <input type="text" name="" v-model="name" placeholder="FULL NAME" />
       <img src="/static/imgs/coffeeicons/Face@2x.png">
     </div>
 
@@ -29,17 +29,23 @@
     </div>
 
     <div class="cm-confirm-button-confirm" @click="submit">MAKE COFFEE</div>
+    <mt-popup v-model="popupVisible" popup-transition="popup-fade">
+      {{popupContent}}
+    </mt-popup>
   </div>
 </template>
 
 <script>
+import { Indicator } from 'mint-ui'
 export default {
   name: 'Confirm',
   data () {
     return {
       name: '',
       requirements: '',
-      cupSize: 0
+      cupSize: 0,
+      popupVisible: false,
+      popupContent: ''
     }
   },
   computed: {
@@ -55,6 +61,30 @@ export default {
       this.cupSize = size
     },
     submit () {
+      //  check the name
+      if (this.name.trim().length === 0 || this.name.trim().indexOf(' ') < 0) {
+        this.popupVisible = true
+        this.popupContent = 'Please input your FULL NAME!'
+        setTimeout(e => (this.popupVisible = false), 2000)
+        return
+      }
+
+      //  check option value
+      if (this.options === undefined) {
+        this.popupVisible = true
+        this.popupContent = 'Your data lost, please try again later!'
+        setTimeout(function () {
+          this.popupVisible = false
+          setTimeout(e => this.$router.push('/'), 500)
+        }.bind(this), 2000)
+        return
+      }
+
+      //  submit value
+      Indicator.open({
+        spinnerType: 'fading-circle'
+      })
+
       let data = {
         'DrinkName': this.type,
         'Hot_Iced': this.options[4].showReplace ? 1 : 0,
@@ -74,7 +104,15 @@ export default {
         body: JSON.stringify(data),
         headers: headers,
         method: 'POST'
-      }).then(e => this.$router.push({ name: 'Result', params: { name: this.name, type: this.type } }))
+      }).then(function () {
+        Indicator.close()
+        this.$router.push({ name: 'Result', params: { name: this.name, type: this.type } })
+      }, function () {
+        Indicator.close()
+        this.popupVisible = true
+        this.popupContent = 'Something error happened, please try again !'
+        setTimeout(e => (this.popupVisible = false), 2000)
+      })
       // console.log(this.type, this.options, this.name, this.requirements, this.cupSize)
     }
   }
@@ -193,5 +231,18 @@ export default {
       animation-timing-function: linear;
       transform:translate(0, 0rem);
     }
+  }
+
+  input::-webkit-input-placeholder{
+    color: white;
+    opacity: 0.5;
+  }
+
+  /* mint-ui component css */
+  .mint-popup {
+    padding: 2rem;
+    font-size: 1.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 1rem;
   }
 </style>
