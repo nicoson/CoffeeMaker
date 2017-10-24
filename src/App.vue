@@ -177,5 +177,6 @@ body {
 #app_photoCache {
   width: 0;
   height: 0;
+  overflow: hidden;
 }
 </style>

@@ -3,13 +3,13 @@
     <p class="cm-confirm-title">ANY SPECIAL REQUIREMENT</p>
     <div class="cm-confirm-inputgroup">
       <input type="text" name="" v-model="requirements"/>
-      <img src="/static/imgs/coffeeicons/Voice@2x.png">
+      <!-- <img src="/static/imgs/coffeeicons/Voice@2x.png"> -->
     </div>
 
-    <P class="cm-confirm-title">PLEASE INPUT YOUR NAME OR SCAN FACE</P>
+    <P class="cm-confirm-title">PLEASE INPUT YOUR FULL NAME</P>
     <div class="cm-confirm-inputgroup">
       <input type="text" name="" v-model="name" placeholder="FULL NAME" />
-      <img src="/static/imgs/coffeeicons/Face@2x.png">
+      <!-- <img src="/static/imgs/coffeeicons/Face@2x.png"> -->
     </div>
 
     <P class="cm-confirm-title">WHAT SIZE WOULD YOU LIKE?</P>
@@ -100,18 +100,22 @@ export default {
 
       var headers = new Headers()
       headers.append('Content-Type', 'application/json')
+      let that = this
       fetch('/api/CoffeeMaker/Booking', {
         body: JSON.stringify(data),
         headers: headers,
         method: 'POST'
-      }).then(function () {
+      })
+      .then(res => res.json())
+      .then(function (e) {
         Indicator.close()
-        this.$router.push({ name: 'Result', params: { name: this.name, type: this.type } })
-      }, function () {
+        that.$router.push({ name: 'Result', params: { name: that.name, type: that.type } })
+      })
+      .catch(function (e) {
         Indicator.close()
-        this.popupVisible = true
-        this.popupContent = 'Something error happened, please try again !'
-        setTimeout(e => (this.popupVisible = false), 2000)
+        that.popupVisible = true
+        that.popupContent = 'Something error happened, please try again!'
+        setTimeout(e => (that.popupVisible = false), 2000)
       })
       // console.log(this.type, this.options, this.name, this.requirements, this.cupSize)
     }

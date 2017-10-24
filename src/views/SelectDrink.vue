@@ -13,7 +13,7 @@
         </mt-swipe-item>
       </mt-swipe>
     </div>
-    <p class="cm-selectdrink-footer">Couldn't find your drink? Click here to see more.</p>
+    <!-- <p class="cm-selectdrink-footer">Couldn't find your drink? Click here to see more.</p> -->
   </div>
 </template>
 
@@ -64,7 +64,7 @@ export default {
     width: 100%;
   }
 
-  @containerHeight: 100vw;
+  @containerHeight: 105vw;
 
   .cm-selectdrink-selection-container {
     height: @containerHeight;

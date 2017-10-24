@@ -18,7 +18,7 @@
 
     <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0">
       <div class="cm-drinkdetail-animation-png">        
-        <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png" style="{visibility: (animationUrl.length===0) ? visible : hidden}">
+        <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
         <div class="cm-drinkdetail-animation-hot">
           <img src="/static/imgs/coffeeicons/Smoke@2x.png">
@@ -27,7 +27,7 @@
     </div>
     <div id="cm_drinkdetail_animation" v-else>
       <div class="cm-drinkdetail-animation-png">        
-        <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png">
+        <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
         <div class="cm-drinkdetail-animation-iced">
           <img src="/static/imgs/coffeeicons/Ice@2x.png">
@@ -73,7 +73,7 @@ function bindUrl (url) {
 }
 
 function test (url) {
-  for (let i = 0; i < 51; i++) {
+  for (let i = 0; i < 41; i++) {
     let src = url + (100 + i).toString().slice(1) + '.png'
     setTimeout(e => (document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = src), i * 50)
   }
@@ -187,7 +187,7 @@ export default {
       }
       // this.$nextTick(bindUrl(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
       // this.$nextTick(test(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
-      setTimeout(e => (this.animationUrl = ''), 3000)
+      setTimeout(e => (this.animationUrl = ''), 2500)
     },
     resetOption () {
       this.recipe = Flavors.map(e => ({
@@ -289,6 +289,10 @@ export default {
       p.cm-drinkdetail-animation-title {
         font-size: 1.5rem;
         height: 4rem;
+      }
+
+      .cm-drinkdetail-animation-png-hide {
+        visibility: hidden;
       }
 
       .cm-drinkdetail-animation-hot {
