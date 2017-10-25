@@ -60,9 +60,9 @@
     </div>
 
     <img class="cm-drinkdetail-animation-gif" v-if="animationUrl.length > 0" />
-    <div :class="{'cm-drinkdetail-animation-addEffect': (animationUrl.length === 0) ? false : true, 'cm-drinkdetail-animation-noEffect': (animationUrl.length === 0) ? true : false}">
+    <div :class="{'cm-drinkdetail-animation-addEffect': (currentChoice.length === 0) ? false : true, 'cm-drinkdetail-animation-noEffect': (currentChoice.length === 0) ? true : false}">
       <p>{{currentChoice}}</p>
-      <p>+1</p>
+      <p>{{currentNum}}</p>
     </div>
   </div>
 </template>
@@ -70,13 +70,14 @@
 <script>
 import Flavors from '@/assets/flavor'
 
- // replay the gif by using global function, in case of VUE refresh trap
-function bindUrl (url) {
-  setTimeout(e => (document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = url), 100)
-}
+// replay the gif by using global function, in case of VUE refresh trap
+// function bindGifUrl (url) {
+//   setTimeout(e => (document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = url), 100)
+// }
 
-function test (url) {
-  for (let i = 0; i < 41; i++) {
+// play the pngs by using global function, in case of VUE refresh trap
+function bindPngUrl (url) {
+  for (let i = 0; i < 40; i++) {
     let src = url + (100 + i).toString().slice(1) + '.png'
     setTimeout(e => (document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = src), i * 50)
   }
@@ -90,7 +91,8 @@ export default {
       recipe: [],
       iconClick: Flavors.map(e => false),
       animationUrl: '',
-      currentChoice: ''
+      currentChoice: '',
+      currentNum: ''
     }
   },
   computed: {
@@ -162,29 +164,29 @@ export default {
       this.animateTrigger(index, subIndex)
     },
     animateTrigger (index, subIndex) {
-      this.currentChoice = this.recipe[index].name
       switch (index) {
         case 0:
           //  sugar/no sugar
           this.animationUrl = this.flavors[index].animationUrl
-          this.$nextTick(bindUrl(this.animationUrl))
+          this.currentNum = '+' + this.recipe[index].num
           break
         case 1:
           //  cream/no cream
           this.animationUrl = this.flavors[index].animationUrl
-          this.$nextTick(bindUrl(this.animationUrl))
+          this.currentNum = '+' + this.recipe[index].num
           break
         case 2:
           //  whole/skim/soya milk
           this.animationUrl = this.flavors[index].subMenu[subIndex].animationUrl
-          this.$nextTick(bindUrl(this.animationUrl))
+          this.currentNum = '+' + this.recipe[index].num
           break
         case 3:
           //  decaf/caf
+          this.currentNum = ''
           if (this.recipe[index].name !== this.flavors[index].name) {
             this.animationUrl = this.flavors[index].replace.animationUrl
-            this.$nextTick(bindUrl(this.animationUrl))
           } else {
+            this.addAnimation(index)
             return
           }
           break
@@ -193,21 +195,32 @@ export default {
           // this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
           // this.$nextTick(bindUrl(this.animationUrl))
           // break
+          this.addAnimation(index)
           return
         case 5:
           //  shot/no shot
           // this.animationUrl = '/static/imgs/coffeeicons/AddShot.gif'
+          this.currentNum = ''
           if (this.recipe[index].name === this.flavors[index].name) {
             this.animationUrl = this.flavors[index].animationUrl
           } else {
+            this.addAnimation(index)
             return
           }
           break
       }
-      this.$nextTick(test(this.animationUrl))
+      this.$nextTick(bindPngUrl(this.animationUrl))
       // this.$nextTick(bindUrl(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
-      // this.$nextTick(test(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
-      setTimeout(e => (this.animationUrl = ''), 2000)
+      // this.$nextTick(bindPngUrl(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
+      let that = this
+      setTimeout(function () {
+        that.animationUrl = ''
+        that.addAnimation(index)
+      }, 2000)
+    },
+    addAnimation (index) {
+      this.currentChoice = this.recipe[index].name
+      setTimeout(e => (this.currentChoice = ''), 2000)
     },
     resetOption () {
       this.recipe = Flavors.map(e => ({

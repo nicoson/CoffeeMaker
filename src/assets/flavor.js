@@ -3,7 +3,7 @@ const flavor = [
     name: 'Sugar',
     iconUrl: '/static/imgs/coffeeicons/Sugar@2x.png',
     bottomUrl: '/static/imgs/coffeeicons/SugarS@2x.png',
-    animationUrl: '/static/imgs/coffeeicons/Shot/Shot_000',
+    animationUrl: '/static/imgs/coffeeicons/AddSugar/Comp 1_000',
     subMenu: [],
     replace: null
   },

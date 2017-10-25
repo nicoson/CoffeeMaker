@@ -13,7 +13,7 @@
       Will leave the page within {{popupRemainTime}} secs
     </mt-popup> -->
 
-    <div class="cm-result-button-confirm" @click="goHome">MAKE COFFEE</div>
+    <div v-if="ajaxDone" class="cm-result-button-confirm" @click="goHome">MAKE COFFEE</div>
   </div>
 </template>
 
@@ -27,6 +27,7 @@ export default {
       popupVisible: true,
       popupRemainTime: 6,
       flip: false,
+      ajaxDone: false,
       data: this.$route.params.data
     }
   },
@@ -59,12 +60,14 @@ export default {
       that.statusTitle = 'SUCCESS'
       that.subTitle = 'Your coffee order has been submitted to our receptionist successfully. It will be provided to you shortly. Thank you!'
       that.flip = true
+      that.ajaxDone = true
       setTimeout(e => (that.flip = false), 2000)
     })
     .catch(function (e) {
       that.statusTitle = 'OOPS!'
       that.subTitle = 'Sorry, your submit data was somehow lost, please make your choice again'
       that.flip = true
+      that.ajaxDone = true
       setTimeout(e => (that.flip = false), 2000)
       // Indicator.close()
       // that.popupVisible = true
@@ -102,7 +105,7 @@ export default {
   }
 
   .cm-result-t2-container {
-    perspective: 500px
+    perspective: 8rem;
   }
 
   .cm-result-t2 {
@@ -167,15 +170,15 @@ export default {
   }
 
   .cm-result-t2-flipOver {
-    animation: flipOver 2s
+    animation: flipOver 1s
   }
 
   @keyframes flipOver {
     from {
       animation-timing-function: linear;
       transform: rotateX(90deg);
-      border: 1px solid #666;
-      box-shadow: 0 0 0 2px white;
+/*      border: 1px solid #666;
+      box-shadow: 0 0 0 2px white;*/
     }
 /*
     25% {

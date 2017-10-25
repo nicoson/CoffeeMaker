@@ -322,6 +322,47 @@
       <img src="/static/imgs/coffeeicons/Milk/Comp 1_00048.png">
       <img src="/static/imgs/coffeeicons/Milk/Comp 1_00049.png">
       <img src="/static/imgs/coffeeicons/Milk/Comp 1_00050.png">
+      
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00000.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00001.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00002.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00003.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00004.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00005.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00006.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00007.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00008.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00009.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00010.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00011.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00012.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00013.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00014.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00015.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00016.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00017.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00018.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00019.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00020.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00021.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00022.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00023.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00024.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00025.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00026.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00027.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00028.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00029.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00030.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00031.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00032.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00033.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00034.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00035.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00036.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00037.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00038.png">
+      <img src="/static/imgs/coffeeicons/AddSugar/Comp 1_00039.png">
     </div>
   </div>
 </template>

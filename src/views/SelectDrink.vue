@@ -5,7 +5,7 @@
       <mt-swipe :auto="0">
         <mt-swipe-item v-for="(prods, index) in drinktype" :key="index">
           <div class="cm-selectdrink-selection-page-col">
-            <div class="cm-selectdrink-selection-page-col-item" v-for="(prod, subIndex) in prods" :key="subIndex" @click="goDetail(prod.nameEN)">
+            <div class="cm-selectdrink-selection-page-col-item" v-for="(prod, subIndex) in prods" :key="subIndex" @click="goDetail(prod.nameEN, prod.config)">
               <img :src="prod.url">
               <p class="cm-selectdrink-selection-page-col-item-title">{{prod.nameEN}}</p>
             </div>
@@ -19,6 +19,7 @@
 
 <script>
 import drinktype from '@/assets/drinktype'
+import Flavors from '@/assets/flavor'
 export default {
   name: 'SelectDrink',
   data () {
@@ -37,9 +38,21 @@ export default {
     }
   },
   methods: {
-    goDetail (type) {
+    goDetail (type, config) {
       localStorage.setItem('coffeeType', type)
-      setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 200)
+      if (config === 0) {
+        setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 200)
+      } else {
+        let recipe = Flavors.map(e => ({
+          name: e.name,
+          url: e.bottomUrl,
+          num: 0,
+          showReplace: false,
+          showSubmenu: false
+        }))
+        recipe[4].showReplace = true
+        setTimeout(() => this.$router.push({ name: 'Confirm', params: { type: type, options: recipe } }), 200)
+      }
     }
   }
 }
