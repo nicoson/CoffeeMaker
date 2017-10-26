@@ -390,6 +390,7 @@ export default {
       if ((from.path === '/' && to.path === '/drinkdetail') ||
         (from.path === '/drinkdetail' && to.path === '/confirm') ||
         (from.path === '/confirm' && to.path === '/result') ||
+        (from.path === '/confirm' && to.path === '/face') ||
         (from.path === '/result' && to.path === '/')) {
         this.transitionName = 'slide-left'
       } else {

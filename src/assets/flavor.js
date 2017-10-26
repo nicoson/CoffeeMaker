@@ -5,7 +5,9 @@ const flavor = [
     bottomUrl: '/static/imgs/coffeeicons/SugarS@2x.png',
     animationUrl: '/static/imgs/coffeeicons/AddSugar/Comp 1_000',
     subMenu: [],
-    replace: null
+    replace: null,
+    choice: ['NO SUGAR', '1/2', 'STANDARD', '+1', '+2', '+3'],
+    defaultChoice: 2
   },
   {
     name: 'Cream',
@@ -13,7 +15,9 @@ const flavor = [
     bottomUrl: '/static/imgs/coffeeicons/Cream_S@2x.png',
     animationUrl: '/static/imgs/coffeeicons/AddCream/Comp 1_000',
     subMenu: [],
-    replace: null
+    replace: null,
+    choice: ['NO CREAM', '1/2', 'STANDARD', '+1', '+2', '+3'],
+    defaultChoice: 2
   },
   {
     name: 'Milk',
@@ -22,28 +26,30 @@ const flavor = [
     animationUrl: '/static/imgs/coffeeicons/Milk/Comp 1_000',
     subMenu: [
       {
-        name: 'Whole',
+        name: 'WHOLE MILK',
         iconUrl: '/static/imgs/coffeeicons/Milk@2x.png',
         bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
         animationUrl: '/static/imgs/coffeeicons/Milk/Comp 1_000',
         color: 'white'
       },
       {
-        name: 'Skim',
+        name: 'SKIM MILK',
         iconUrl: '/static/imgs/coffeeicons/Skim@2x.png',
         bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
         animationUrl: '/static/imgs/coffeeicons/AddSkim/Comp 1_000',
         color: '#bbdeff'
       },
       {
-        name: 'Soya',
+        name: 'SOYA MILK',
         iconUrl: '/static/imgs/coffeeicons/Soya@2x.png',
         bottomUrl: '/static/imgs/coffeeicons/Milk_S@2x.png',
         animationUrl: '/static/imgs/coffeeicons/AddSoya/Comp 1_000',
         color: '#f3ce91'
       }
     ],
-    replace: null
+    replace: null,
+    choice: ['NO MILK', '1/2', 'STANDARD', '+1', '+2', '+3'],
+    defaultChoice: 2
   },
   {
     name: 'Decaf',
@@ -56,7 +62,9 @@ const flavor = [
       iconUrl: '/static/imgs/coffeeicons/Caf@2x.png',
       bottomUrl: '',
       animationUrl: '/static/imgs/coffeeicons/AddDecaf/Comp 1_000'
-    }
+    },
+    choice: ['DECAF', '1/2 DECAF', 'STANDARD'],
+    defaultChoice: 2
   },
   {
     name: 'Iced',
@@ -69,7 +77,9 @@ const flavor = [
       iconUrl: '/static/imgs/coffeeicons/hot@2x.png',
       bottomUrl: '',
       animationUrl: '/static/imgs/coffeeicons/Shot/Comp 1_000'
-    }
+    },
+    choice: ['ICED', 'HOT'],
+    defaultChoice: 1
   },
   {
     name: 'Shot',
@@ -82,7 +92,9 @@ const flavor = [
       iconUrl: '/static/imgs/coffeeicons/Shot.png',
       bottomUrl: '',
       animationUrl: ''
-    }
+    },
+    choice: ['STANDARD', '+1', '+2'],
+    defaultChoice: 0
   }
 ]
 

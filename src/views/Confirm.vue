@@ -9,7 +9,7 @@
     <P class="cm-confirm-title">PLEASE INPUT YOUR FULL NAME</P>
     <div class="cm-confirm-inputgroup">
       <input type="text" name="" v-model="name" placeholder="FULL NAME" />
-      <!-- <img src="/static/imgs/coffeeicons/Face@2x.png"> -->
+      <img src="/static/imgs/coffeeicons/Face@2x.png" @click="goCamera()">
     </div>
 
     <P class="cm-confirm-title">WHAT SIZE WOULD YOU LIKE?</P>
@@ -54,11 +54,18 @@ export default {
     },
     options: function () {
       return this.$route.params.options
+    },
+    clientName: function () {
+      this.name = this.$route.params.clientName ? this.$route.params.clientName : ''
+      return this.name
     }
   },
   methods: {
     chooseCupSize (size) {
       this.cupSize = size
+    },
+    goCamera () {
+      this.$router.push({ name: 'FaceRecog', params: { type: this.type, options: this.recipe } })
     },
     submit () {
       //  check the name

@@ -1,21 +1,53 @@
 <template>
   <div class="cm-router-container">
+    <!-- Option Bar -->
     <div id="cm_drinkdetail_optionbar">
-      <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index" @click="addOption(index)">
+      <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index" @click="openAdjustPanel(index)">
         <p>{{recipe[index].showReplace ? flavor.replace.name : flavor.name}}</p>
         <img :class="{'tada': iconClick[index]}" :src="recipe[index].showReplace ? flavor.replace.iconUrl : flavor.iconUrl" />
-        <transition name="flip-submenu">
+<!--         <transition name="flip-submenu">
           <div class="cm-drinkdetail-option-item-subitemgroup" v-if="flavor.subMenu.length != 0 && recipe[index].showSubmenu">
             <ul>
               <li v-for="(item, subIndex) in flavor.subMenu" :key="subIndex" @click="addOption(index,subIndex)">{{item.name}}</li>
             </ul>
           </div>
-        </transition>
+        </transition> -->
+        <div class="cm-drinkdetail-option-item-footer">
+          {{flavor.choice[recipe[index].chosen] === "STANDARD" ? "STD" : flavor.choice[recipe[index].chosen]}}
+        </div>
       </div>
     </div>
 
+
+    <!-- Slider Bar Panel -->
+    <transition name="flip-submenu">
+      <div id="cm_drinkdetail_option_slideBar" v-if="adjustPanel.isShow">
+        <div id="cm_drinkdetail_option_slideBar_upperContainer" v-if="adjustPanel.subMenu.length != 0">
+          <div v-for="(item, index) in adjustPanel.subMenu" :key="index">
+            <div></div>
+            <p>{{item.name}}</p>
+          </div>
+        </div>
+        <div id="cm_drinkdetail_option_slideBar_lowerContainer">
+          <div class="cm-drinkdetail-option-slideBar-slideItemContainer">
+            <div class="cm-drinkdetail-option-slideBar-slideItem" v-for="(choice, index) in adjustPanel.choice" :key="index" @click="makeChoice(index)">
+              <p :class="{'cm-drinkdetail-option-slideBar-slideItem-chosen': index === adjustPanel.chosen}">{{choice}}</p>
+              <div>
+                <p :class="{'cm-drinkdetail-option-slideBar-slideItem-chosen': index === adjustPanel.chosen}"></p>
+              </div>
+            </div>
+          </div>
+          <div class="cm-drinkdetail-option-slideBar-slideLine"></div>
+        </div>
+      </div>
+    </transition>
+
+
+    <!-- flex space -->
     <div class="cm-common-itemspace"></div>
 
+
+    <!-- Animation PIC -->
     <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0">
       <div class="cm-drinkdetail-animation-png">        
         <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
@@ -38,8 +70,10 @@
       </div>
     </div>
 
+
+    <!-- Footer Button Group -->
     <div id="cm_drinkdetail_footerbar">
-      <div id="cm_drinkdetail_results">
+<!--       <div id="cm_drinkdetail_results">
         <div class="cm-drinkdetail-results-item" v-for="(item, index) in recipe" :key="index">
           <transition name="rotate-footmenu">
             <div v-if="item.num != 0">
@@ -51,11 +85,11 @@
           </transition>
         </div>
       </div>
-      <div class="cm-common-itemspace"></div>
+      <div class="cm-common-itemspace"></div> -->
       <div id="cm_drinkdetail_actionbar">
-        <div class="cm-drinkdetail-button-confirm" @click="goConfirm"><p>OK</p></div>
-        <div class="cm-drinkdetail-button-cancel" @click="resetOption">DEFAULT SET</div>
         <div class="cm-drinkdetail-button-cancel" @click="goBack">BACK</div>
+        <div class="cm-drinkdetail-button-confirm" @click="goConfirm"><p>NEXT</p></div>
+<!--         <div class="cm-drinkdetail-button-cancel" @click="resetOption">DEFAULT SET</div> -->
       </div>
     </div>
 
@@ -92,7 +126,14 @@ export default {
       iconClick: Flavors.map(e => false),
       animationUrl: '',
       currentChoice: '',
-      currentNum: ''
+      currentNum: '',
+      adjustPanel: {
+        isShow: false,
+        itemIndex: -1,
+        subMenu: [],
+        choice: [],
+        chosen: 0
+      }
     }
   },
   computed: {
@@ -111,6 +152,30 @@ export default {
     },
     goConfirm () {
       this.$router.push({ name: 'Confirm', params: { type: this.type, options: this.recipe } })
+    },
+    openAdjustPanel (index) {
+      //  icon click effect
+      this.iconClick[index] = true
+      let that = this
+      setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
+
+      if (this.adjustPanel.isShow && this.adjustPanel.itemIndex === index) {
+        this.adjustPanel.isShow = false
+        return
+      } else if (!this.adjustPanel.isShow) {
+        this.adjustPanel.isShow = true
+      }
+
+      this.adjustPanel.itemIndex = index
+      this.adjustPanel.subMenu = this.flavors[index].subMenu
+      this.adjustPanel.choice = this.flavors[index].choice
+      this.adjustPanel.chosen = this.recipe[index].chosen
+    },
+    makeChoice (index) {
+      this.recipe[this.adjustPanel.itemIndex].chosen = index
+      this.adjustPanel.chosen = this.recipe[this.adjustPanel.itemIndex].chosen
+      // setTimeout(e => (this.adjustPanel.isShow = false), 800)
+      this.animateTrigger(this.adjustPanel.itemIndex, index)
     },
     addOption (index, subIndex = -1) {
       console.log(index)
@@ -226,6 +291,7 @@ export default {
       this.recipe = Flavors.map(e => ({
         name: e.name,
         url: e.bottomUrl,
+        chosen: e.defaultChoice,
         num: 0,
         showReplace: false,
         showSubmenu: false
@@ -258,6 +324,14 @@ export default {
 
       img {
         width: 100%;
+      }
+
+      .cm-drinkdetail-option-item-footer {
+        border: 1px solid white;
+        border-radius: 1rem;
+        font-size: .9rem;
+        padding: 0.4rem 0.2rem;
+        box-shadow: 2px 2px 2px #aaa;
       }
 
       .cm-drinkdetail-option-item-subitemgroup {
@@ -312,7 +386,7 @@ export default {
 
     div.cm-drinkdetail-animation-png {
       width: 40%;
-      margin: 0 auto -10rem auto;
+      margin: 0 auto;
       position: relative;
 
       >img:first-child {
@@ -383,9 +457,107 @@ export default {
     }
   }
 
+  #cm_drinkdetail_option_slideBar {
+    border-radius: 1.5rem;
+    background: rgba(108,108,108,.8);
+    /*width: 80%;*/
+    margin: 0 auto;
+
+    #cm_drinkdetail_option_slideBar_upperContainer {
+      background: rgba(108,108,108,.5);
+      padding: 1.5rem 0 1rem 0;
+      border-top-left-radius: 1.5rem;
+      border-top-right-radius: 1.5rem;
+      box-shadow: 0 5px 10px rgb(108,108,108);
+      display: flex;
+      justify-content: center;
+
+      >div {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: .5rem ;
+        margin: 0 1rem;
+
+        border: 1px solid white;
+        border-radius: 2rem;
+
+        >div {
+          width: 0;
+          height: 0;
+          border: 0.7rem solid white;
+          border-radius: 50%;
+        }
+
+        &:nth-of-type(2)>div {
+          border-color: #bbdeff;
+        }
+
+        &:nth-of-type(3)>div {
+          border-color: #fcf7bb;
+        }
+
+        >p {
+          padding-left: .8rem;
+        }
+      }
+    }
+
+    #cm_drinkdetail_option_slideBar_lowerContainer {
+      border-radius: 1.5rem;
+      padding: 2rem 2rem 2.5rem 2rem;
+
+      .cm-drinkdetail-option-slideBar-slideItemContainer {
+        display: flex;
+        justify-content: space-between;
+        color: rgba(255,255,255,.6);
+
+        div.cm-drinkdetail-option-slideBar-slideItem {
+          width: 7rem;
+
+          >p:first-child {
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+          }
+
+          >div {
+            width: 2rem;
+            height: 2rem;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            >p {
+              width: 0;
+              height: 0;
+              border: 0.5rem solid rgba(255,255,255,.6);
+              border-radius: 50%;
+              margin: 0 auto;
+            }
+          }
+
+          .cm-drinkdetail-option-slideBar-slideItem-chosen {
+            color: #69d0ba;
+            border-color: #69d0ba;
+            border-width: .9rem;
+            animation: makeChoice .5s cubic-bezier(1, 3.09, 0.53, -0.22);
+          }
+        }
+      }
+
+      .cm-drinkdetail-option-slideBar-slideLine {
+        border-top: 0.4rem dashed #979797;
+        width: 80%;
+        margin: 0 auto;
+        margin-top: -1.2rem;
+      }
+    }
+  }
+
   .cm-drinkdetail-animation-gif {
     position: fixed;
-    bottom: 1rem;
+    bottom: 1.5rem;
     width: 105%;
     left: -1.5rem;
   }
@@ -412,14 +584,9 @@ export default {
     display: none;
   }
   #cm_drinkdetail_footerbar {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    width: 100vw;
-    padding: 2rem;
-    box-sizing: border-box;
+    padding: 2.5rem;
 
-    #cm_drinkdetail_results {
+/*    #cm_drinkdetail_results {
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -436,23 +603,29 @@ export default {
           font-size: 1rem;
         }
       }
+    }*/
+
+    #cm_drinkdetail_actionbar {
+      display: flex;
+      justify-content: center;
     }
   }
 
   .cm-common-btn {
-    width: 5rem;
+    width: 9rem;
     height: 2.5rem;
     padding: 0.5rem 1.5rem;
     border-radius: 2rem;
     color: white;
     border: 1px solid white;
     vertical-align: middle;
-    font-size: 1rem;
+    font-size: 1.2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 1.2rem;
+    margin: 0 1rem;
     box-shadow: 1px 1px 3px #777;
+    letter-spacing: 0.2rem;
   }
 
   .cm-drinkdetail-button-confirm {
@@ -473,18 +646,18 @@ export default {
   .flip-submenu-enter-active{
       -webkit-backface-visibility: visible !important;
       backface-visibility: visible !important;
-      animation-name: flipInY;
+      animation-name: flipInX;
       .animated;
   }
 
   .flip-submenu-leave-active{
       -webkit-backface-visibility: visible !important;
       backface-visibility: visible !important;
-      animation-name: flipOutY;
+      animation-name: flipOutX;
       .animated;
   }
 
-  .flipInY {
+/*  .flipInY {
     -webkit-backface-visibility: visible !important;
     backface-visibility: visible !important;
     animation-name: flipInY;
@@ -496,6 +669,49 @@ export default {
     backface-visibility: visible !important;
     animation-name: flipOutY;
     .animated;
+  }
+*/
+
+  @keyframes flipInX {
+    from {
+      transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+      animation-timing-function: ease-in;
+      opacity: 0;
+    }
+
+    40% {
+      transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+      animation-timing-function: ease-in;
+    }
+
+    60% {
+      transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+      opacity: 1;
+    }
+
+    80% {
+      transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    }
+
+    to {
+      transform: perspective(400px);
+    }
+  }
+
+  @keyframes flipOutX {
+    from {
+      transform: perspective(400px);
+    }
+
+    30% {
+      transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+      opacity: 1;
+    }
+
+    to {
+      transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+      opacity: 0;
+    }
   }
 
   .rotateIn {
@@ -734,4 +950,44 @@ export default {
       opacity: .2;
     }
   }
+
+  @keyframes makeChoice {
+    from {
+      border-width: .5rem;
+    }
+
+    to {
+      border-width: .8rem;
+    }
+  }
+
+/*  @keyframes bounceIn {
+    from, 20%, 40%, 60%, 80%, to {
+      animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
+
+    0% {
+      border-width: .5rem;
+    }
+
+    20% {
+      border-width: 1rem;
+    }
+
+    40% {
+      border-width: .7rem;
+    }
+
+    60% {
+      border-width: .9rem;
+    }
+
+    80% {
+      border-width: .75rem;
+    }
+
+    to {
+      border-width: .8rem;
+    }
+  }*/
 </style>
