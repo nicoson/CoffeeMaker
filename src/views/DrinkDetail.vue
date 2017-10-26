@@ -4,14 +4,7 @@
     <div id="cm_drinkdetail_optionbar">
       <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index" @click="openAdjustPanel(index)">
         <p>{{recipe[index].showReplace ? flavor.replace.name : flavor.name}}</p>
-        <img :class="{'tada': iconClick[index]}" :src="recipe[index].showReplace ? flavor.replace.iconUrl : flavor.iconUrl" />
-<!--         <transition name="flip-submenu">
-          <div class="cm-drinkdetail-option-item-subitemgroup" v-if="flavor.subMenu.length != 0 && recipe[index].showSubmenu">
-            <ul>
-              <li v-for="(item, subIndex) in flavor.subMenu" :key="subIndex" @click="addOption(index,subIndex)">{{item.name}}</li>
-            </ul>
-          </div>
-        </transition> -->
+        <img :class="{'tada': iconClick[index]}" :src="flavor.iconUrl" />
         <div class="cm-drinkdetail-option-item-footer">
           {{flavor.choice[recipe[index].chosen] === "STANDARD" ? "STD" : flavor.choice[recipe[index].chosen]}}
         </div>
@@ -23,7 +16,7 @@
     <transition name="flip-submenu">
       <div id="cm_drinkdetail_option_slideBar" v-if="adjustPanel.isShow">
         <div id="cm_drinkdetail_option_slideBar_upperContainer" v-if="adjustPanel.subMenu.length != 0">
-          <div v-for="(item, index) in adjustPanel.subMenu" :key="index">
+          <div :class="{'cm_drinkdetail_option_slideBar_subMenuChosen': adjustPanel.subChosen === index}" v-for="(item, index) in adjustPanel.subMenu" :key="index" @click="chooseSubmenu(index)">
             <div></div>
             <p>{{item.name}}</p>
           </div>
@@ -47,8 +40,8 @@
     <div class="cm-common-itemspace"></div>
 
 
-    <!-- Animation PIC -->
-    <div id="cm_drinkdetail_animation" v-if="recipe[4].num == 0">
+    <!-- Main Image Panel -->
+    <div id="cm_drinkdetail_animation" v-if="recipe[4].chosen == 1">
       <div class="cm-drinkdetail-animation-png">        
         <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
@@ -73,19 +66,6 @@
 
     <!-- Footer Button Group -->
     <div id="cm_drinkdetail_footerbar">
-<!--       <div id="cm_drinkdetail_results">
-        <div class="cm-drinkdetail-results-item" v-for="(item, index) in recipe" :key="index">
-          <transition name="rotate-footmenu">
-            <div v-if="item.num != 0">
-              <div>
-                <p>{{item.name}}<span v-if="item.num > 0">&nbsp;+{{item.num}}</span></p>
-              </div>
-              <img :src="item.url">
-            </div>
-          </transition>
-        </div>
-      </div>
-      <div class="cm-common-itemspace"></div> -->
       <div id="cm_drinkdetail_actionbar">
         <div class="cm-drinkdetail-button-cancel" @click="goBack">BACK</div>
         <div class="cm-drinkdetail-button-confirm" @click="goConfirm"><p>NEXT</p></div>
@@ -93,7 +73,10 @@
       </div>
     </div>
 
+    <!-- Animation gif holder -->
     <img class="cm-drinkdetail-animation-gif" v-if="animationUrl.length > 0" />
+
+    <!-- Animation pop up -->
     <div :class="{'cm-drinkdetail-animation-addEffect': (currentChoice.length === 0) ? false : true, 'cm-drinkdetail-animation-noEffect': (currentChoice.length === 0) ? true : false}">
       <p>{{currentChoice}}</p>
       <p>{{currentNum}}</p>
@@ -103,12 +86,6 @@
 
 <script>
 import Flavors from '@/assets/flavor'
-
-// replay the gif by using global function, in case of VUE refresh trap
-// function bindGifUrl (url) {
-//   setTimeout(e => (document.getElementsByClassName('cm-drinkdetail-animation-gif')[0].src = url), 100)
-// }
-
 // play the pngs by using global function, in case of VUE refresh trap
 function bindPngUrl (url) {
   for (let i = 0; i < 40; i++) {
@@ -132,7 +109,8 @@ export default {
         itemIndex: -1,
         subMenu: [],
         choice: [],
-        chosen: 0
+        chosen: 0,
+        subChosen: 0
       }
     }
   },
@@ -159,10 +137,14 @@ export default {
       let that = this
       setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
 
-      if (this.adjustPanel.isShow && this.adjustPanel.itemIndex === index) {
+      if (this.adjustPanel.isShow) {
         this.adjustPanel.isShow = false
-        return
-      } else if (!this.adjustPanel.isShow) {
+        if (this.adjustPanel.itemIndex === index) {
+          return
+        } else {
+          setTimeout(e => (this.adjustPanel.isShow = true), 500)
+        }
+      } else {
         this.adjustPanel.isShow = true
       }
 
@@ -176,6 +158,11 @@ export default {
       this.adjustPanel.chosen = this.recipe[this.adjustPanel.itemIndex].chosen
       // setTimeout(e => (this.adjustPanel.isShow = false), 800)
       this.animateTrigger(this.adjustPanel.itemIndex, index)
+    },
+    chooseSubmenu (index) {
+      this.adjustPanel.subChosen = index
+      this.recipe[this.adjustPanel.itemIndex].name = this.adjustPanel.subMenu[index].name
+      this.flavors[this.adjustPanel.itemIndex].iconUrl = this.adjustPanel.subMenu[index].iconUrl
     },
     addOption (index, subIndex = -1) {
       console.log(index)
@@ -228,55 +215,45 @@ export default {
       //  trigger png animation
       this.animateTrigger(index, subIndex)
     },
-    animateTrigger (index, subIndex) {
+    animateTrigger (index, choiceIndex) {
       switch (index) {
         case 0:
           //  sugar/no sugar
           this.animationUrl = this.flavors[index].animationUrl
-          this.currentNum = '+' + this.recipe[index].num
+          this.currentNum = this.flavors[index].choice[choiceIndex]
           break
         case 1:
           //  cream/no cream
           this.animationUrl = this.flavors[index].animationUrl
-          this.currentNum = '+' + this.recipe[index].num
+          this.currentNum = this.flavors[index].choice[choiceIndex]
           break
         case 2:
           //  whole/skim/soya milk
-          this.animationUrl = this.flavors[index].subMenu[subIndex].animationUrl
-          this.currentNum = '+' + this.recipe[index].num
+          this.animationUrl = this.flavors[index].subMenu[this.adjustPanel.subChosen].animationUrl
+          // this.animationUrl = this.flavors[index].subMenu[index].animationUrl
+          this.currentNum = this.flavors[index].choice[choiceIndex]
           break
         case 3:
           //  decaf/caf
-          this.currentNum = ''
-          if (this.recipe[index].name !== this.flavors[index].name) {
-            this.animationUrl = this.flavors[index].replace.animationUrl
-          } else {
-            this.addAnimation(index)
-            return
-          }
+          this.animationUrl = this.flavors[index].animationUrl
+          this.currentNum = this.flavors[index].choice[choiceIndex]
           break
         case 4:
           //  add ice/hot
           // this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
           // this.$nextTick(bindUrl(this.animationUrl))
           // break
+          this.currentNum = this.flavors[index].choice[choiceIndex]
           this.addAnimation(index)
           return
         case 5:
           //  shot/no shot
           // this.animationUrl = '/static/imgs/coffeeicons/AddShot.gif'
-          this.currentNum = ''
-          if (this.recipe[index].name === this.flavors[index].name) {
-            this.animationUrl = this.flavors[index].animationUrl
-          } else {
-            this.addAnimation(index)
-            return
-          }
+          this.animationUrl = this.flavors[index].animationUrl
+          this.currentNum = this.flavors[index].choice[choiceIndex]
           break
       }
       this.$nextTick(bindPngUrl(this.animationUrl))
-      // this.$nextTick(bindUrl(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
-      // this.$nextTick(bindPngUrl(this.animationUrl))  //  replay the gif by using global function, in case of VUE refresh trap
       let that = this
       setTimeout(function () {
         that.animationUrl = ''
@@ -310,7 +287,7 @@ export default {
     padding: 1rem 4rem;
 
     .cm-drinkdetail-option-item {
-      width: 5rem;
+      /*width: 5rem;*/
       position: relative;
 
       &:hover {
@@ -479,9 +456,6 @@ export default {
         padding: .5rem ;
         margin: 0 1rem;
 
-        border: 1px solid white;
-        border-radius: 2rem;
-
         >div {
           width: 0;
           height: 0;
@@ -500,6 +474,11 @@ export default {
         >p {
           padding-left: .8rem;
         }
+      }
+
+      .cm_drinkdetail_option_slideBar_subMenuChosen {
+        border: 1px solid white;
+        border-radius: 2rem;
       }
     }
 
@@ -563,11 +542,9 @@ export default {
   }
 
   .cm-drinkdetail-animation-addEffect {
+    width: 100%;
     position: fixed;
-    left: 50%;
     bottom: 50%;
-    padding: 2rem;
-    margin-left: -4.5rem;
     transform: scale(0.1, 0.1);
     animation: addEffect 2s linear;
 
@@ -576,7 +553,7 @@ export default {
     }
 
     p:last-child {
-      font-size: 5rem;
+      font-size: 3rem;
     }
   }
 
@@ -585,25 +562,6 @@ export default {
   }
   #cm_drinkdetail_footerbar {
     padding: 2.5rem;
-
-/*    #cm_drinkdetail_results {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      animation: shinning 2s infinite;
-
-      .cm-drinkdetail-results-item>div {
-        margin-left: 1.5rem;
-
-        >img {
-          height: 4rem;
-        }
-
-        >div {
-          font-size: 1rem;
-        }
-      }
-    }*/
 
     #cm_drinkdetail_actionbar {
       display: flex;
@@ -656,21 +614,6 @@ export default {
       animation-name: flipOutX;
       .animated;
   }
-
-/*  .flipInY {
-    -webkit-backface-visibility: visible !important;
-    backface-visibility: visible !important;
-    animation-name: flipInY;
-    .animated;
-  }
-
-  .flipOutY {
-    -webkit-backface-visibility: visible !important;
-    backface-visibility: visible !important;
-    animation-name: flipOutY;
-    .animated;
-  }
-*/
 
   @keyframes flipInX {
     from {
@@ -907,45 +850,37 @@ export default {
   @keyframes addEffect {
     from {
       position: fixed;
-      left: 50%;
       bottom: 50%;
-      padding: 2rem;
-      margin-left: -4.5rem;
       transform: scale(0.1, 0.1);
       opacity: 1;
     }
 
     20% {
-      left: 50%;
       bottom: 50%;
       transform: scale(1, 1) scale(1, 1);
       opacity: 1;
     }
 
     60% {
-      left: 50%;
       bottom: 50%;
       transform: scale(1, 1) rotate(0);
       opacity: .8;
     }
 
     70% {
-      left: 40%;
-      bottom: 60%;
+      bottom: 40%;
       transform: scale(1, 1) rotate(360deg);
       opacity: .6;
     }
 
     80% {
-      left: 30%;
       bottom: 50%;
       transform: scale(1, 1) rotate(720deg);
       opacity: .4;
     }
 
     to {
-      left: 10%;
-      bottom: 0;
+      bottom: 100%;
       transform: scale(0.1, 0.1) rotate(2000deg);
       opacity: .2;
     }
@@ -960,34 +895,4 @@ export default {
       border-width: .8rem;
     }
   }
-
-/*  @keyframes bounceIn {
-    from, 20%, 40%, 60%, 80%, to {
-      animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-    }
-
-    0% {
-      border-width: .5rem;
-    }
-
-    20% {
-      border-width: 1rem;
-    }
-
-    40% {
-      border-width: .7rem;
-    }
-
-    60% {
-      border-width: .9rem;
-    }
-
-    80% {
-      border-width: .75rem;
-    }
-
-    to {
-      border-width: .8rem;
-    }
-  }*/
 </style>

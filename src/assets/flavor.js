@@ -57,42 +57,27 @@ const flavor = [
     bottomUrl: '/static/imgs/coffeeicons/Caf_S@2x.png',
     animationUrl: '/static/imgs/coffeeicons/AddDecaf/Comp 1_000',
     subMenu: [],
-    replace: {
-      name: 'Caf',
-      iconUrl: '/static/imgs/coffeeicons/Caf@2x.png',
-      bottomUrl: '',
-      animationUrl: '/static/imgs/coffeeicons/AddDecaf/Comp 1_000'
-    },
+    replace: null,
     choice: ['DECAF', '1/2 DECAF', 'STANDARD'],
     defaultChoice: 2
   },
   {
-    name: 'Iced',
-    iconUrl: '/static/imgs/coffeeicons/AddIce@2x.png',
+    name: 'Temp',
+    iconUrl: '/static/imgs/coffeeicons/hot@2x.png',
     bottomUrl: '/static/imgs/coffeeicons/AddIce@2x.png',
     animationUrl: '/static/imgs/coffeeicons/Shot/Comp 1_000',
     subMenu: [],
-    replace: {
-      name: 'Hot',
-      iconUrl: '/static/imgs/coffeeicons/hot@2x.png',
-      bottomUrl: '',
-      animationUrl: '/static/imgs/coffeeicons/Shot/Comp 1_000'
-    },
+    replace: null,
     choice: ['ICED', 'HOT'],
     defaultChoice: 1
   },
   {
     name: 'Shot',
-    iconUrl: '/static/imgs/coffeeicons/Shot.png',
+    iconUrl: '/static/imgs/coffeeicons/Shot@2x.png',
     bottomUrl: '/static/imgs/coffeeicons/Shot_S@2x.png',
     animationUrl: '/static/imgs/coffeeicons/Shot/Shot_000',
     subMenu: [],
-    replace: {
-      name: 'Noshot',
-      iconUrl: '/static/imgs/coffeeicons/Shot.png',
-      bottomUrl: '',
-      animationUrl: ''
-    },
+    replace: null,
     choice: ['STANDARD', '+1', '+2'],
     defaultChoice: 0
   }

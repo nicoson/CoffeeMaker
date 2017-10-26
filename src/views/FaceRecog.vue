@@ -1,8 +1,8 @@
 <template>
   <div class="cm-router-container">
     <div id="cm_facerecog_container">
-      still in build
-      <video id="video" width="800" height="600" autoplay></video>
+      <p>still in build</p>
+      <video id="video" width="800" height="1200" autoplay></video>
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@ export default {
       audio: true,
       video: {
         width: 800,
-        height: 600
+        height: 1200
       }
     }
 
