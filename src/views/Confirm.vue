@@ -9,7 +9,7 @@
     <P class="cm-confirm-title">PLEASE INPUT YOUR FULL NAME</P>
     <div class="cm-confirm-inputgroup">
       <input type="text" name="" v-model="name" placeholder="FULL NAME" />
-      <img src="/static/imgs/coffeeicons/Face@2x.png" @click="goCamera()">
+      <!-- <img src="/static/imgs/coffeeicons/Face@2x.png" @click="goCamera()"> -->
     </div>
 
     <P class="cm-confirm-title">WHAT SIZE WOULD YOU LIKE?</P>
@@ -29,6 +29,7 @@
     </div>
 
     <div class="cm-confirm-button-confirm" @click="submit">MAKE COFFEE</div>
+    <div class="cm-confirm-button-back" @click="goBack">BACK</div>
     <mt-popup v-model="popupVisible" popup-transition="popup-fade">
       {{popupContent}}
     </mt-popup>
@@ -37,6 +38,7 @@
 
 <script>
 // import { Indicator } from 'mint-ui'
+import Flavors from '@/assets/flavor'
 export default {
   name: 'Confirm',
   data () {
@@ -45,7 +47,8 @@ export default {
       requirements: '',
       cupSize: 0,
       popupVisible: false,
-      popupContent: ''
+      popupContent: '',
+      flavors: Flavors
     }
   },
   computed: {
@@ -87,19 +90,19 @@ export default {
         return
       }
 
-      //  submit value
+      //  submit value open spin modal
       // Indicator.open({
       //   spinnerType: 'fading-circle'
       // })
 
       let data = {
         'DrinkName': this.type,
-        'Hot_Iced': this.options[4].showReplace ? 1 : 0,
-        'Sugar': this.options[0].num,
-        'Cream': this.options[1].num,
-        'Caf': this.options[3].showReplace ? 1 : 0,
-        [this.options[2].name]: this.options[2].num,
-        'Shot': this.options[5].showReplace ? 1 : 0,
+        'Sugar': this.flavors[0].choice[this.options[0].chosen],
+        'Cream': this.flavors[1].choice[this.options[1].chosen],
+        'Milk': this.options[2].name + ' ' + this.flavors[2].choice[this.options[2].chosen],
+        'Caf': this.flavors[3].choice[this.options[3].chosen],
+        'Hot_Iced': this.flavors[4].choice[this.options[4].chosen],
+        'Shot': this.flavors[5].choice[this.options[5].chosen],
         'Special': this.requirements,
         'UserName': this.name,
         'Cup': this.cupSize
@@ -107,6 +110,9 @@ export default {
 
       this.$router.push({ name: 'Result', params: { name: this.name, type: this.type, data: data } })
       // console.log(this.type, this.options, this.name, this.requirements, this.cupSize)
+    },
+    goBack () {
+      this.$router.push('/drinkdetail')
     }
   }
 }
@@ -174,7 +180,7 @@ export default {
     }
   }
 
-  .cm-confirm-button-confirm {
+  .btn {
     width: 19rem;
     padding: 1rem 3rem;
     border-radius: 2rem;
@@ -185,11 +191,20 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 1.7rem auto;
+    margin: 1.7rem auto .8rem auto;
     box-shadow: 1px 1px 3px #777;
+    font-size: 1.1rem;
+  }
+
+  .cm-confirm-button-confirm {
+    .btn;
     background: #a25817;
     border-color: #a25817;
-    font-size: 1.1rem;
+  }
+
+  .cm-confirm-button-back {
+    .btn;
+    border-color: white;
   }
 
   .cm-confirm-cupSize-chosen {

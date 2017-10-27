@@ -1,9 +1,9 @@
 <template>
-  <div class="cm-router-container">
+  <div class="cm-router-container" @click="closeOptionPanel">
     <!-- Option Bar -->
     <div id="cm_drinkdetail_optionbar">
       <div class="cm-drinkdetail-option-item" v-for="(flavor, index) in flavors" :key="index" @click="openAdjustPanel(index)">
-        <p>{{recipe[index].showReplace ? flavor.replace.name : flavor.name}}</p>
+        <p>{{flavor.name}}</p>
         <img :class="{'tada': iconClick[index]}" :src="flavor.iconUrl" />
         <div class="cm-drinkdetail-option-item-footer">
           {{flavor.choice[recipe[index].chosen] === "STANDARD" ? "STD" : flavor.choice[recipe[index].chosen]}}
@@ -69,7 +69,6 @@
       <div id="cm_drinkdetail_actionbar">
         <div class="cm-drinkdetail-button-cancel" @click="goBack">BACK</div>
         <div class="cm-drinkdetail-button-confirm" @click="goConfirm"><p>NEXT</p></div>
-<!--         <div class="cm-drinkdetail-button-cancel" @click="resetOption">DEFAULT SET</div> -->
       </div>
     </div>
 
@@ -116,7 +115,7 @@ export default {
   },
   computed: {
     type: function () {
-      return this.$route.params.type ? this.$route.params.type : localStorage.coffeeType
+      return this.$route.params.type ? this.$route.params.type : sessionStorage.coffeeType
     }
   },
   created () {
@@ -129,6 +128,7 @@ export default {
       this.$router.push('/')
     },
     goConfirm () {
+      sessionStorage.setItem('recipe', JSON.stringify(this.recipe))
       this.$router.push({ name: 'Confirm', params: { type: this.type, options: this.recipe } })
     },
     openAdjustPanel (index) {
@@ -164,68 +164,76 @@ export default {
       this.recipe[this.adjustPanel.itemIndex].name = this.adjustPanel.subMenu[index].name
       this.flavors[this.adjustPanel.itemIndex].iconUrl = this.adjustPanel.subMenu[index].iconUrl
     },
-    addOption (index, subIndex = -1) {
-      console.log(index)
+    // addOption (index, subIndex = -1) {
+    //   console.log(index)
 
-      //  handle submenu items
-      if (subIndex !== -1) {
-        event.stopPropagation()
-        this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
-        if (this.recipe[index].name === this.flavors[index].subMenu[subIndex].name) {
-          if (this.recipe[index].num < 3) {
-            this.recipe[index].num++
-            //  trigger png animation
-            this.animateTrigger(index, subIndex)
-          }
-        } else {
-          this.recipe[index].name = this.flavors[index].subMenu[subIndex].name
-          this.flavors[index].iconUrl = this.flavors[index].subMenu[subIndex].iconUrl
-          this.recipe[index].num = 1
-          //  trigger png animation
-          this.animateTrigger(index, subIndex)
-        }
-        return
-      }
+    //   //  handle submenu items
+    //   if (subIndex !== -1) {
+    //     event.stopPropagation()
+    //     this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
+    //     if (this.recipe[index].name === this.flavors[index].subMenu[subIndex].name) {
+    //       if (this.recipe[index].num < 3) {
+    //         this.recipe[index].num++
+    //         //  trigger png animation
+    //         this.animateTrigger(index, subIndex)
+    //       }
+    //     } else {
+    //       this.recipe[index].name = this.flavors[index].subMenu[subIndex].name
+    //       this.flavors[index].iconUrl = this.flavors[index].subMenu[subIndex].iconUrl
+    //       this.recipe[index].num = 1
+    //       //  trigger png animation
+    //       this.animateTrigger(index, subIndex)
+    //     }
+    //     return
+    //   }
 
-      //  handle items with submenu
-      if (this.flavors[index].subMenu.length !== 0 && subIndex === -1) {
-        this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
-        return
-      }
+    //   //  handle items with submenu
+    //   if (this.flavors[index].subMenu.length !== 0 && subIndex === -1) {
+    //     this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
+    //     return
+    //   }
 
-      //  add click effect
-      this.iconClick[index] = true
-      let that = this
-      setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
+    //   //  add click effect
+    //   this.iconClick[index] = true
+    //   let that = this
+    //   setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
 
-      //  handle binary choice - ice/hot caf/decaf
-      if (this.flavors[index].replace !== null) {
-        this.recipe[index].showReplace = !this.recipe[index].showReplace
-        this.recipe[index].name = this.recipe[index].showReplace ? this.flavors[index].name : this.flavors[index].replace.name
-        this.recipe[index].url = this.recipe[index].showReplace ? this.flavors[index].bottomUrl : this.flavors[index].replace.bottomUrl
-        this.recipe[index].num = this.recipe[index].showReplace ? -1 : 0
-      } else {
-        //  handle the addable choice
-        this.recipe[index].name = this.flavors[index].name
-        if (this.recipe[index].num < 3) {
-          this.recipe[index].num++
-        }
-      }
+    //   //  handle binary choice - ice/hot caf/decaf
+    //   if (this.flavors[index].replace !== null) {
+    //     this.recipe[index].showReplace = !this.recipe[index].showReplace
+    //     this.recipe[index].name = this.recipe[index].showReplace ? this.flavors[index].name : this.flavors[index].replace.name
+    //     this.recipe[index].url = this.recipe[index].showReplace ? this.flavors[index].bottomUrl : this.flavors[index].replace.bottomUrl
+    //     this.recipe[index].num = this.recipe[index].showReplace ? -1 : 0
+    //   } else {
+    //     //  handle the addable choice
+    //     this.recipe[index].name = this.flavors[index].name
+    //     if (this.recipe[index].num < 3) {
+    //       this.recipe[index].num++
+    //     }
+    //   }
 
-      //  trigger png animation
-      this.animateTrigger(index, subIndex)
-    },
+    //   //  trigger png animation
+    //   this.animateTrigger(index, subIndex)
+    // },
     animateTrigger (index, choiceIndex) {
       switch (index) {
         case 0:
           //  sugar/no sugar
-          this.animationUrl = this.flavors[index].animationUrl
           this.currentNum = this.flavors[index].choice[choiceIndex]
+          if (this.currentNum === this.flavors[index].choice[0]) {
+            this.addAnimation(index, '  ')
+            return
+          }
+          this.animationUrl = this.flavors[index].animationUrl
           break
         case 1:
           //  cream/no cream
-          this.animationUrl = this.flavors[index].animationUrl
           this.currentNum = this.flavors[index].choice[choiceIndex]
+          if (this.currentNum === this.flavors[index].choice[0]) {
+            this.addAnimation(index, '  ')
+            return
+          }
+          this.animationUrl = this.flavors[index].animationUrl
           break
         case 2:
           //  whole/skim/soya milk
@@ -235,14 +243,15 @@ export default {
           break
         case 3:
           //  decaf/caf
-          this.animationUrl = this.flavors[index].animationUrl
           this.currentNum = this.flavors[index].choice[choiceIndex]
+          if (this.currentNum === this.flavors[index].choice[0]) {
+            this.addAnimation(index, '  ')
+            return
+          }
+          this.animationUrl = this.flavors[index].animationUrl
           break
         case 4:
           //  add ice/hot
-          // this.animationUrl = '/static/imgs/coffeeicons/AddSugar.gif'
-          // this.$nextTick(bindUrl(this.animationUrl))
-          // break
           this.currentNum = this.flavors[index].choice[choiceIndex]
           this.addAnimation(index)
           return
@@ -260,19 +269,34 @@ export default {
         that.addAnimation(index)
       }, 2000)
     },
-    addAnimation (index) {
-      this.currentChoice = this.recipe[index].name
+    addAnimation (index, title = '') {
+      this.currentChoice = (title.length > 0) ? title : this.recipe[index].name
       setTimeout(e => (this.currentChoice = ''), 2000)
     },
     resetOption () {
-      this.recipe = Flavors.map(e => ({
-        name: e.name,
-        url: e.bottomUrl,
-        chosen: e.defaultChoice,
-        num: 0,
-        showReplace: false,
-        showSubmenu: false
-      }))
+      if (sessionStorage.getItem('recipe')) {
+        this.recipe = JSON.parse(sessionStorage.getItem('recipe'))
+      } else {
+        this.recipe = Flavors.map(e => ({
+          name: e.name,
+          url: e.bottomUrl,
+          chosen: e.defaultChoice,
+          num: 0,
+          showReplace: false,
+          showSubmenu: false
+        }))
+      }
+    },
+    closeOptionPanel (event) {
+      if (event.target.classList.value.indexOf('cm-drinkdetail-option-item') < 0 &&
+        event.target.parentElement.classList.value.indexOf('cm-drinkdetail-option-item') < 0 &&
+        event.target.id !== 'cm_drinkdetail_option_slideBar' &&
+        event.target.parentElement.parentElement.id !== 'cm_drinkdetail_option_slideBar' &&
+        event.target.parentElement.parentElement.parentElement.id !== 'cm_drinkdetail_option_slideBar' &&
+        event.target.parentElement.parentElement.parentElement.parentElement.id !== 'cm_drinkdetail_option_slideBar') {
+        this.adjustPanel.isShow = false
+      }
+      console.log(1)
     }
   }
 }
@@ -300,7 +324,7 @@ export default {
       }
 
       img {
-        width: 100%;
+        width: 5rem;
       }
 
       .cm-drinkdetail-option-item-footer {
@@ -553,7 +577,7 @@ export default {
     }
 
     p:last-child {
-      font-size: 3rem;
+      font-size: 2rem;
     }
   }
 
@@ -869,19 +893,19 @@ export default {
 
     70% {
       bottom: 40%;
-      transform: scale(1, 1) rotate(360deg);
+      transform: scale(.6, .6) rotate(360deg);
       opacity: .6;
     }
 
     80% {
       bottom: 50%;
-      transform: scale(1, 1) rotate(720deg);
+      transform: scale(.5, .5) rotate(720deg);
       opacity: .4;
     }
 
     to {
-      bottom: 100%;
-      transform: scale(0.1, 0.1) rotate(2000deg);
+      bottom: 80%;
+      transform: scale(0.2, 0.2) rotate(2000deg);
       opacity: .2;
     }
   }

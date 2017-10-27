@@ -39,7 +39,8 @@ export default {
   },
   methods: {
     goDetail (type, config) {
-      localStorage.setItem('coffeeType', type)
+      sessionStorage.setItem('coffeeType', type)
+      sessionStorage.removeItem('recipe')
       if (config === 0) {
         setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 200)
       } else {
