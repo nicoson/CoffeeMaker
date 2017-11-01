@@ -23,7 +23,7 @@
         </div>
         <div id="cm_drinkdetail_option_slideBar_lowerContainer">
           <div class="cm-drinkdetail-option-slideBar-slideItemContainer">
-            <div class="cm-drinkdetail-option-slideBar-slideItem" v-for="(choice, index) in adjustPanel.choice" :key="index" @click="makeChoice(index)">
+            <div class="cm-drinkdetail-option-slideBar-slideItem" v-for="(choice, index) in adjustPanel.choice" :key="index" @touchstart="makeChoice(index)" @touchmove="makeChoice(index)" @touchend="makeChoice(index)">
               <p :class="{'cm-drinkdetail-option-slideBar-slideItem-chosen': index === adjustPanel.chosen}">{{choice}}</p>
               <div>
                 <p :class="{'cm-drinkdetail-option-slideBar-slideItem-chosen': index === adjustPanel.chosen}"></p>
@@ -115,12 +115,12 @@ export default {
   },
   computed: {
     type: function () {
-      return this.$route.params.type ? this.$route.params.type : sessionStorage.coffeeType
+      return sessionStorage.coffeeType
     }
   },
   created () {
     this.resetOption()
-    console.log(this.$route.params.type)
+    // console.log(this.$route.params.type)
   },
   methods: {
     goBack () {
@@ -154,9 +154,25 @@ export default {
       this.adjustPanel.chosen = this.recipe[index].chosen
     },
     makeChoice (index) {
+      // this.recipe[this.adjustPanel.itemIndex].chosen = index
+      // this.adjustPanel.chosen = index
+      // // setTimeout(e => (this.adjustPanel.isShow = false), 800)
+      // this.animateTrigger(this.adjustPanel.itemIndex, index)
+
+      let optionEle = document.getElementsByClassName('cm-drinkdetail-option-slideBar-slideItem')
+      for (let i = 1; i < optionEle.length; i++) {
+        if (optionEle[i].offsetLeft > event.changedTouches[0].screenX) {
+          index = i - 1
+          break
+        }
+        index = i
+      }
+      // console.log(index, optionEle[index].offsetLeft, event.changedTouches[0].screenX)
+
+      this.adjustPanel.chosen = index
+      if (event.type !== 'touchend') return
+
       this.recipe[this.adjustPanel.itemIndex].chosen = index
-      this.adjustPanel.chosen = this.recipe[this.adjustPanel.itemIndex].chosen
-      // setTimeout(e => (this.adjustPanel.isShow = false), 800)
       this.animateTrigger(this.adjustPanel.itemIndex, index)
     },
     chooseSubmenu (index) {
@@ -164,57 +180,6 @@ export default {
       this.recipe[this.adjustPanel.itemIndex].name = this.adjustPanel.subMenu[index].name
       this.flavors[this.adjustPanel.itemIndex].iconUrl = this.adjustPanel.subMenu[index].iconUrl
     },
-    // addOption (index, subIndex = -1) {
-    //   console.log(index)
-
-    //   //  handle submenu items
-    //   if (subIndex !== -1) {
-    //     event.stopPropagation()
-    //     this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
-    //     if (this.recipe[index].name === this.flavors[index].subMenu[subIndex].name) {
-    //       if (this.recipe[index].num < 3) {
-    //         this.recipe[index].num++
-    //         //  trigger png animation
-    //         this.animateTrigger(index, subIndex)
-    //       }
-    //     } else {
-    //       this.recipe[index].name = this.flavors[index].subMenu[subIndex].name
-    //       this.flavors[index].iconUrl = this.flavors[index].subMenu[subIndex].iconUrl
-    //       this.recipe[index].num = 1
-    //       //  trigger png animation
-    //       this.animateTrigger(index, subIndex)
-    //     }
-    //     return
-    //   }
-
-    //   //  handle items with submenu
-    //   if (this.flavors[index].subMenu.length !== 0 && subIndex === -1) {
-    //     this.recipe[index].showSubmenu = !this.recipe[index].showSubmenu
-    //     return
-    //   }
-
-    //   //  add click effect
-    //   this.iconClick[index] = true
-    //   let that = this
-    //   setTimeout(e => (that.iconClick = [false, false, false, false, false, false]), 1000)
-
-    //   //  handle binary choice - ice/hot caf/decaf
-    //   if (this.flavors[index].replace !== null) {
-    //     this.recipe[index].showReplace = !this.recipe[index].showReplace
-    //     this.recipe[index].name = this.recipe[index].showReplace ? this.flavors[index].name : this.flavors[index].replace.name
-    //     this.recipe[index].url = this.recipe[index].showReplace ? this.flavors[index].bottomUrl : this.flavors[index].replace.bottomUrl
-    //     this.recipe[index].num = this.recipe[index].showReplace ? -1 : 0
-    //   } else {
-    //     //  handle the addable choice
-    //     this.recipe[index].name = this.flavors[index].name
-    //     if (this.recipe[index].num < 3) {
-    //       this.recipe[index].num++
-    //     }
-    //   }
-
-    //   //  trigger png animation
-    //   this.animateTrigger(index, subIndex)
-    // },
     animateTrigger (index, choiceIndex) {
       switch (index) {
         case 0:
@@ -288,8 +253,8 @@ export default {
       }
     },
     closeOptionPanel (event) {
-      if (event.target.classList.value.indexOf('cm-drinkdetail-option-item') < 0 &&
-        event.target.parentElement.classList.value.indexOf('cm-drinkdetail-option-item') < 0 &&
+      if (event.target.className.indexOf('cm-drinkdetail-option-item') < 0 &&
+        event.target.parentElement.className.indexOf('cm-drinkdetail-option-item') < 0 &&
         event.target.id !== 'cm_drinkdetail_option_slideBar' &&
         event.target.parentElement.parentElement.id !== 'cm_drinkdetail_option_slideBar' &&
         event.target.parentElement.parentElement.parentElement.id !== 'cm_drinkdetail_option_slideBar' &&

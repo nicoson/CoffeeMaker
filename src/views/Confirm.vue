@@ -9,7 +9,7 @@
     <P class="cm-confirm-title">PLEASE INPUT YOUR FULL NAME</P>
     <div class="cm-confirm-inputgroup">
       <input type="text" name="" v-model="name" placeholder="FULL NAME" />
-      <!-- <img src="/static/imgs/coffeeicons/Face@2x.png" @click="goCamera()"> -->
+      <img src="/static/imgs/coffeeicons/Face@2x.png" @click="goCamera()">
     </div>
 
     <P class="cm-confirm-title">WHAT SIZE WOULD YOU LIKE?</P>
@@ -53,26 +53,25 @@ export default {
   },
   computed: {
     type: function () {
-      return this.$route.params.type
+      return sessionStorage.getItem('coffeeType')
     },
     options: function () {
-      return this.$route.params.options
-    },
-    clientName: function () {
-      this.name = this.$route.params.clientName ? this.$route.params.clientName : ''
-      return this.name
+      return JSON.parse(sessionStorage.getItem('recipe'))
     }
+  },
+  mounted () {
+    this.name = sessionStorage.getItem('clientName') ? sessionStorage.getItem('clientName') : ''
   },
   methods: {
     chooseCupSize (size) {
       this.cupSize = size
     },
     goCamera () {
-      this.$router.push({ name: 'FaceRecog', params: { type: this.type, options: this.recipe } })
+      this.$router.push({ name: 'FaceRecog' })
     },
     submit () {
       //  check the name
-      if (this.name.trim().length === 0 || this.name.trim().indexOf(' ') < 0) {
+      if (this.name.trim().length === 0 || (this.name.trim().indexOf(' ') < 0 && this.name.trim().indexOf('.') < 0)) {
         this.popupVisible = true
         this.popupContent = 'Please input your FULL NAME!'
         setTimeout(e => (this.popupVisible = false), 2000)
@@ -90,19 +89,14 @@ export default {
         return
       }
 
-      //  submit value open spin modal
-      // Indicator.open({
-      //   spinnerType: 'fading-circle'
-      // })
-
       let data = {
         'DrinkName': this.type,
-        'Sugar': this.flavors[0].choice[this.options[0].chosen],
-        'Cream': this.flavors[1].choice[this.options[1].chosen],
-        'Milk': this.options[2].name + ' ' + this.flavors[2].choice[this.options[2].chosen],
-        'Caf': this.flavors[3].choice[this.options[3].chosen],
-        'Hot_Iced': this.flavors[4].choice[this.options[4].chosen],
-        'Shot': this.flavors[5].choice[this.options[5].chosen],
+        'Sugar': this.options !== 0 ? this.flavors[0].choice[this.options[0].chosen] : null,
+        'Cream': this.options !== 0 ? this.flavors[1].choice[this.options[1].chosen] : null,
+        'Milk': this.options !== 0 ? this.options[2].name + ' ' + this.flavors[2].choice[this.options[2].chosen] : null,
+        'Caf': this.options !== 0 ? this.flavors[3].choice[this.options[3].chosen] : null,
+        'Hot_Iced': this.options !== 0 ? this.flavors[4].choice[this.options[4].chosen] : null,
+        'Shot': this.options !== 0 ? this.flavors[5].choice[this.options[5].chosen] : null,
         'Special': this.requirements,
         'UserName': this.name,
         'Cup': this.cupSize
@@ -112,7 +106,11 @@ export default {
       // console.log(this.type, this.options, this.name, this.requirements, this.cupSize)
     },
     goBack () {
-      this.$router.push('/drinkdetail')
+      if (this.options === 0) {
+        this.$router.push('/')
+      } else {
+        this.$router.push('/drinkdetail')
+      }
     }
   }
 }

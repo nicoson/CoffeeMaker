@@ -1,8 +1,24 @@
 <template>
   <div class="cm-router-container">
     <div id="cm_facerecog_container">
-      <p>still in build</p>
-      <video id="video" width="800" height="1200" autoplay></video>
+      <video id="video" autoplay></video>
+      <canvas width="500" height="800"></canvas>
+      <div id="cm_facerecog_masker">
+        <svg id="svg" viewBox="0 0 500 800">
+          <desc>三次贝塞尔曲线</desc><defs></defs>
+          <path d="M50 250 
+          A200 200 0 0 1 450 250
+          Q450,350 350,500
+          Q250,630 150,500
+          Q50,350 50,250
+          L0,250 L0,800 L500,800 L500,0 L0,0 L0,250 L50,250Z" style="fill:rgba(0,0,0,.5);"></path>
+        </svg>
+      </div>
+      <div id="cm_facerecog_toolPanle">
+        <p>Please put your face in the cycle</p>
+        <div id="cm_facerecog_button" @click="submit"></div>
+        <p>Take Photo</p>
+      </div>
     </div>
   </div>
 </template>
@@ -12,7 +28,10 @@ export default {
   name: 'FaceRecog',
   data () {
     return {
-      name: ''
+      name: '',
+      video: '',
+      canvas: '',
+      interval: ''
     }
   },
   computed: {
@@ -34,29 +53,28 @@ export default {
     var constraints = {
       audio: true,
       video: {
-        width: 800,
-        height: 1200
+        width: 500,
+        height: 800
       }
     }
 
-    var video = document.querySelector('video')
+    this.video = document.querySelector('video')
 
+    let that = this
     navigator.mediaDevices.getUserMedia(constraints)
     .then(function (stream) {
-      video.src = window.URL.createObjectURL(stream)
-      video.onloadedmetadata = function (e) {
-        video.play()
+      that.video.src = window.URL.createObjectURL(stream)
+      that.video.onloadedmetadata = function (e) {
+        that.video.play()
+        this.interval = setInterval(e => that.takePIC(), 100)
       }
     }).catch(function (err) {
       console.log(err.name + ': ' + err.message)
     })
 
-    //  handle drawing img
-    // let canvas = document.querySelector('canvas')
-    // let context = canvas.getContext('2d')
-    // function takePIC() {
-    //     context.drawImage(video, 0, 0)
-    // }
+    // handle drawing img
+    this.canvas = document.querySelector('canvas')
+    this.context = this.canvas.getContext('2d')
   },
   methods: {
     promisifiedOldGUM (constraints) {
@@ -73,40 +91,15 @@ export default {
         getUserMedia.call(navigator, constraints, resolve, reject)
       })
     },
+    takePIC () {
+      this.context.drawImage(this.video, 0, 0)
+    },
     submit () {
-      //  check the name
-      if (this.name.trim().length === 0 || this.name.trim().indexOf(' ') < 0) {
-        this.popupVisible = true
-        this.popupContent = 'Please input your FULL NAME!'
-        setTimeout(e => (this.popupVisible = false), 2000)
-        return
-      }
-
-      //  check option value
-      if (this.options === undefined) {
-        this.popupVisible = true
-        this.popupContent = 'Your data lost, please try again later!'
-        setTimeout(function () {
-          this.popupVisible = false
-          setTimeout(e => this.$router.push('/'), 500)
-        }.bind(this), 2000)
-        return
-      }
-
-      let data = {
-        'DrinkName': this.type,
-        'Hot_Iced': this.options[4].showReplace ? 1 : 0,
-        'Sugar': this.options[0].num,
-        'Cream': this.options[1].num,
-        'Caf': this.options[3].showReplace ? 1 : 0,
-        [this.options[2].name]: this.options[2].num,
-        'Shot': this.options[5].showReplace ? 1 : 0,
-        'Special': this.requirements,
-        'UserName': this.name,
-        'Cup': this.cupSize
-      }
-
-      this.$router.push({ name: 'Result', params: { name: this.name, type: this.type, data: data } })
+      this.takePIC()
+      this.video.pause()
+      this.interval = ''
+      setTimeout(e => this.$router.push({name: 'FaceRecog2', params: { data: this.canvas.toDataURL() }}), 1000)
+      // this.$router.push()
     }
   }
 }
@@ -114,5 +107,56 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style lang='less' scoped>
+  #cm_facerecog_masker {
+    width: 400px;
+    height: 600px;
+    margin: 0 auto;
+  }
 
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: black;
+  }
+
+  video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 500px;
+    height: 800px;
+/*    transform: rotate(-90deg);
+    transform-origin: top right;*/
+  }
+
+  svg {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  #cm_facerecog_toolPanle {
+    position: fixed;
+    width: 100%;
+    bottom: 0rem;
+    height: 20rem;
+    border-top: 1px solid white;
+
+    p {
+      font-size: 1.7rem;
+    }
+
+    #cm_facerecog_button {
+      width: 7rem;
+      height: 7rem;
+      background: #3cb8b5;
+      border-radius: 50% 50%;
+      border: 3px solid #aaa;
+      margin: 2rem auto;
+    }
+  }
 </style>

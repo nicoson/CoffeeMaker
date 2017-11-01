@@ -19,7 +19,6 @@
 
 <script>
 import drinktype from '@/assets/drinktype'
-import Flavors from '@/assets/flavor'
 export default {
   name: 'SelectDrink',
   data () {
@@ -41,18 +40,12 @@ export default {
     goDetail (type, config) {
       sessionStorage.setItem('coffeeType', type)
       sessionStorage.removeItem('recipe')
+      sessionStorage.removeItem('clientName')
       if (config === 0) {
-        setTimeout(() => this.$router.push({ name: 'DrinkDetail', params: { type: type } }), 200)
+        setTimeout(() => this.$router.push({ name: 'DrinkDetail' }), 200)
       } else {
-        let recipe = Flavors.map(e => ({
-          name: e.name,
-          url: e.bottomUrl,
-          num: 0,
-          showReplace: false,
-          showSubmenu: false
-        }))
-        recipe[4].showReplace = true
-        setTimeout(() => this.$router.push({ name: 'Confirm', params: { type: type, options: recipe } }), 200)
+        sessionStorage.setItem('recipe', 0)
+        setTimeout(() => this.$router.push({ name: 'Confirm' }), 200)
       }
     }
   }

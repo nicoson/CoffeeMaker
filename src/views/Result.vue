@@ -13,7 +13,7 @@
       Will leave the page within {{popupRemainTime}} secs
     </mt-popup> -->
 
-    <div v-if="ajaxDone" class="cm-result-button-confirm" @click="goHome">MAKE COFFEE</div>
+    <div v-if="ajaxDone" class="cm-result-button-confirm" @click="goHome">ONE MORE</div>
   </div>
 </template>
 
