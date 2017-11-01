@@ -39,7 +39,7 @@ export default {
       return this.$route.params.type
     },
     imgUrl: function () {
-      return (this.data.Hot_Iced === 0) ? '/static/imgs/coffeeicons/HotDrink@2x.png' : '/static/imgs/coffeeicons/IcedDrink@2x.png'
+      return (this.data.Hot_Iced === 'HOT') ? '/static/imgs/coffeeicons/HotDrink@2x.png' : '/static/imgs/coffeeicons/IcedDrink@2x.png'
     }
   },
   mounted () {
@@ -132,7 +132,7 @@ export default {
 
     p.cm-result-cupgroup-name-hot {
       position: absolute;
-      bottom: 48%;
+      bottom: 40%;
       left: 18%;
       width: 60%;
       font-size: 2rem;
@@ -142,7 +142,7 @@ export default {
 
     p.cm-result-cupgroup-name-cold {
       position: absolute;
-      bottom: 38%;
+      bottom: 32%;
       left: 22%;
       width: 60%;
       font-size: 2rem;
