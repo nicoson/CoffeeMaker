@@ -39,7 +39,7 @@ export default {
       return this.$route.params.type
     },
     imgUrl: function () {
-      return (this.data.Hot_Iced === 'HOT') ? '/static/imgs/coffeeicons/HotDrink@2x.png' : '/static/imgs/coffeeicons/IcedDrink@2x.png'
+      return (this.data.Hot_Iced === 'HOT') ? 'static/imgs/coffeeicons/HotDrink@2x.png' : 'static/imgs/coffeeicons/IcedDrink@2x.png'
     }
   },
   mounted () {

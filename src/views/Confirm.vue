@@ -3,27 +3,27 @@
     <p class="cm-confirm-title">ANY SPECIAL REQUIREMENT</p>
     <div class="cm-confirm-inputgroup">
       <input type="text" name="" v-model="requirements"/>
-      <!-- <img src="/static/imgs/coffeeicons/Voice@2x.png"> -->
+      <!-- <img src="static/imgs/coffeeicons/Voice@2x.png"> -->
     </div>
 
     <P class="cm-confirm-title">PLEASE INPUT YOUR FULL NAME</P>
     <div class="cm-confirm-inputgroup">
       <input type="text" name="" v-model="name" placeholder="FULL NAME" />
-      <img src="/static/imgs/coffeeicons/Face@2x.png" @click="goCamera()">
+      <img src="static/imgs/coffeeicons/Face@2x.png" @click="goCamera()">
     </div>
 
     <P class="cm-confirm-title">WHAT SIZE WOULD YOU LIKE?</P>
     <div id="cm_confirm_capsize_container">
       <div :class="{'cm-confirm-cupSize-chosen': (cupSize == 0)}" @click="chooseCupSize(0)">
-        <img src="/static/imgs/coffeeicons/Cup@2x.png">
+        <img src="static/imgs/coffeeicons/Cup@2x.png">
         <p>Tall</p>
       </div>
       <div :class="{'cm-confirm-cupSize-chosen': (cupSize == 1)}" @click="chooseCupSize(1)">
-        <img src="/static/imgs/coffeeicons/Cup@2x.png">
+        <img src="static/imgs/coffeeicons/Cup@2x.png">
         <p>Grande</p>
       </div>
       <div :class="{'cm-confirm-cupSize-chosen': (cupSize == 2)}" @click="chooseCupSize(2)">
-        <img src="/static/imgs/coffeeicons/Cup@2x.png">
+        <img src="static/imgs/coffeeicons/Cup@2x.png">
         <p>Venti</p>
       </div>
     </div>

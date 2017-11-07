@@ -43,22 +43,22 @@
     <!-- Main Image Panel -->
     <div id="cm_drinkdetail_animation" v-if="recipe[4].chosen == 1">
       <div class="cm-drinkdetail-animation-png">        
-        <img src="/static/imgs/coffeeicons/HotDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
+        <img src="static/imgs/coffeeicons/HotDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
         <div class="cm-drinkdetail-animation-hot">
-          <img src="/static/imgs/coffeeicons/Smoke@2x.png">
+          <img src="static/imgs/coffeeicons/Smoke@2x.png">
         </div>
       </div>
     </div>
     <div id="cm_drinkdetail_animation" v-else>
       <div class="cm-drinkdetail-animation-png">        
-        <img src="/static/imgs/coffeeicons/IcedDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
+        <img src="static/imgs/coffeeicons/IcedDrink_Making@2x.png" :class="{'cm-drinkdetail-animation-png-hide': (animationUrl.length === 0) ? false : true}">
         <p class="cm-drinkdetail-animation-title">{{type}}</p>
         <div class="cm-drinkdetail-animation-iced">
-          <img src="/static/imgs/coffeeicons/Ice@2x.png">
-          <img src="/static/imgs/coffeeicons/Ice@2x.png">
-          <img src="/static/imgs/coffeeicons/Ice@2x.png">
-          <img src="/static/imgs/coffeeicons/Ice@2x.png">
+          <img src="static/imgs/coffeeicons/Ice@2x.png">
+          <img src="static/imgs/coffeeicons/Ice@2x.png">
+          <img src="static/imgs/coffeeicons/Ice@2x.png">
+          <img src="static/imgs/coffeeicons/Ice@2x.png">
         </div>
       </div>
     </div>
@@ -222,7 +222,7 @@ export default {
           return
         case 5:
           //  shot/no shot
-          // this.animationUrl = '/static/imgs/coffeeicons/AddShot.gif'
+          // this.animationUrl = 'static/imgs/coffeeicons/AddShot.gif'
           this.animationUrl = this.flavors[index].animationUrl
           this.currentNum = this.flavors[index].choice[choiceIndex]
           break

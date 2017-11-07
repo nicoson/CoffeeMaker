@@ -16,9 +16,12 @@ Vue.component(Popup.name, Popup)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
-})
+document.addEventListener('deviceready', function () {
+  new Vue({
+    el: '#app',
+    router,
+    template: '<App/>',
+    components: { App }
+  })
+  window.navigator.splashscreen.hide()
+}, false)
