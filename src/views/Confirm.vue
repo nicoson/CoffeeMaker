@@ -67,7 +67,21 @@ export default {
       this.cupSize = size
     },
     goCamera () {
-      this.$router.push({ name: 'FaceRecog' })
+      // this.$router.push({ name: 'FaceRecog' })
+      let that = this
+      navigator.camera.getPicture(that.onSuccess, that.onFail, {
+        // destinationType: Camera.DestinationType.FILE_URI,
+        quality: 50,
+        cameraDirection: 1
+      })
+    },
+    onSuccess (imageURI) {
+      // var image = document.getElementById('myImage')
+      // image.src = imageURI
+      this.$router.push({name: 'FaceRecog2', params: { data: imageURI }})
+    },
+    onFail (message) {
+      alert('Failed because: ' + message)
     },
     submit () {
       //  check the name
